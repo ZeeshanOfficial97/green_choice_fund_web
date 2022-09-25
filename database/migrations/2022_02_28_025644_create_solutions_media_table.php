@@ -17,7 +17,7 @@ class CreateSolutionsMediaTable extends Migration
         Schema::create('solutions_media', function (Blueprint $table) {
             $table->id();
 
-            $table->string('image_url', 2048);
+            $table->string('media_url', 2048);
 
             $table->unsignedBigInteger('solution_id')->nullable()->index();
             $table->foreign('solution_id')->references('id')->on('solutions')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\Solution\Api\V1\SolutionResource;
 use App\Http\Resources\Solution\Api\V1\SolutionResourceCollection;
 use App\Http\Resources\SubCategory\Api\V1\SubCategoryResourceCollection;
 use App\Services\Api\V1\CartService;

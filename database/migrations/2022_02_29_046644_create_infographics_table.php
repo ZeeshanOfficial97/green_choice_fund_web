@@ -24,6 +24,18 @@ class CreateInfographicsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('eulas', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 250);
+            $table->string('description', 2000)->nullable();
+            $table->string('file_url', 2048);
+            $table->boolean('status')->default(true);
+
+
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -33,6 +45,7 @@ class CreateInfographicsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('eulas');
         Schema::dropIfExists('infographics');
     }
 }

@@ -17,13 +17,16 @@ class SolutionResourceCollection extends ResourceCollection
     {
 
         $data['list'] = SolutionResource::collection($this->collection);
-        $data['pagination'] = [
-            'total' => $this->total(),
-            'count' => $this->count(),
-            'per_page' => $this->perPage(),
-            'current_page' => $this->currentPage(),
-            'total_pages' => $this->lastPage(),
-        ];
+        if ($this->total() != null) {
+            $data['pagination'] = [
+                'total' => $this->total(),
+                'count' => $this->count(),
+                'per_page' => $this->perPage(),
+                'current_page' => $this->currentPage(),
+                'total_pages' => $this->lastPage(),
+            ];
+        }
+
         return $data;
     }
 }

@@ -30,6 +30,6 @@ class InstitutionInquiry extends Model
 
     public function contactReason()
     {
-        return $this->belongsTo(Lookup::class, 'contactReason', 'id');
+        return $this->belongsTo(Lookup::class, 'contact_reason_id', 'id');
     }
 }

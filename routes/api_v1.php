@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\WishlistController;
 use App\Http\Controllers\Api\V1\GeneralController;
+use App\Http\Controllers\Api\V1\InvestmentController;
 use App\Http\Controllers\Api\V1\PlaidController;
 use App\Http\Controllers\Api\V1\SolutionController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
@@ -68,7 +69,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/', [CategoryController::class, 'saveCategory']);
     });
 
-    Route::prefix('sub_category')->group(function () {
+    Route::prefix('sub-category')->group(function () {
         Route::post('/', [SubCategoryController::class, 'saveSubCategory']);
     });
 
@@ -78,14 +79,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::prefix('wishlist')->group(function () {
-        Route::post('/{subCategory}', [WishListController::class, 'saveSubCategoryWishList']);
-        Route::post('/{subCategory}/delete', [CartController::class, 'deleteSubCategoryWishList']);
+        Route::post('/remove', [WishListController::class, 'deleteSubCategoryWishlist']);
+        Route::post('/{subCategory}', [WishListController::class, 'saveSubCategoryWishlist']);
         Route::get('/', [WishlistController::class, 'getSubCategoriesWishlist']);
     });
 
     Route::prefix('cart')->group(function () {
         Route::post('/', [CartController::class, 'addToCart']);
-        Route::post('/delete', [CartController::class, 'deleteFromCart']);
+        Route::post('/remove', [CartController::class, 'deleteFromCart']);
         Route::get('/', [CartController::class, 'getCartList']);
         Route::get('/count', [CartController::class, 'cartItemsCount']);
     });
@@ -95,15 +96,21 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::prefix('general')->group(function () {
+        Route::post('/eula', [GeneralController::class, 'saveEula']);
+        Route::post('/infographic', [GeneralController::class, 'saveInfographic']);
         Route::get('/eula', [GeneralController::class, 'getEULA']);
     });
 
     Route::prefix('plaid')->group(function () {
         Route::post('/create_link_token', [PlaidController::class, 'createLinkToken']);
         Route::post('/set_access_token', [PlaidController::class, 'setAccessToken']);
-        Route::post('/account_details', [PlaidController::class, 'getAccountsDetails']);
+        Route::post('/accounts/get', [PlaidController::class, 'getAccountsDetails']);
         Route::post('/transfer_funds', [PlaidController::class, 'transferFunds']);
-
     });
 
+    Route::prefix('investment')->group(function () {
+        Route::post('/save', [InvestmentController::class, 'saveUserInvestment']);
+        Route::get('/user', [InvestmentController::class, 'getUserInvestments']);
+        Route::get('/get', [InvestmentController::class, 'getUserInvestment']);
+    });
 });

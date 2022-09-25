@@ -21,7 +21,7 @@ class AuthController extends ApiController
 
 
         $credentials = $request->only(['email', 'password']);
-        if (!$token = auth('web')->attempt($credentials)) {
+        if (!$token = auth('api')->attempt($credentials)) {
             return $this->errorResponse($invalidCredentials['password'], $invalidCredentials, 610);
         }
 

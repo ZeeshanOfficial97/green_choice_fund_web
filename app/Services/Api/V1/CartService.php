@@ -2,6 +2,9 @@
 
 namespace App\Services\Api\V1;
 
+use App\Http\Resources\Solution\Api\V1\SolutionDetailResource;
+use App\Http\Resources\Solution\Api\V1\SolutionResource;
+use App\Http\Resources\Solution\Api\V1\SolutionResourceCollection;
 use App\Models\Cart;
 use App\Models\CategoriesMedia;
 use App\Models\Category;
@@ -16,7 +19,9 @@ class CartService extends BaseService
     {
         $solutionIds = Cart::where('user_id', '=', Auth::user()->id)->pluck('solution_id');
         $data = Solution::whereIn('id', $solutionIds)->get();
-        return $data;
+        $result['count'] = count($data);
+        $result['list'] = SolutionDetailResource::collection($data);
+        return $result;
     }
 
     public function addToCart($data)

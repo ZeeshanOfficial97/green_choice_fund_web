@@ -17,10 +17,10 @@ return [
     'stripe_public_key' => env('STRIPE_PUBLIC_KEY'),
     'stripe_secret' => env('STRIPE_SECRET'),
 
-    'plaid_client_id' => env('PLAIN_CLIENT_ID'),
-    'plaid_secret' => env('PLAIN_SECRET'),
-    'plaid_env' => env('PLAIN_ENV'),
-    'plaid_products' => env('PLAIN_PRODUCTS'),
+    'plaid_client_id' => env('PLAID_CLIENT_ID'),
+    'plaid_secret' => env('PLAID_SECRET'),
+    'plaid_env' => env('PLAID_ENV'),
+    'plaid_products' => env('PLAID_PRODUCTS'),
     'plaid_country_codes' => env('PLAID_COUNTRY_CODES'),
 
 ];

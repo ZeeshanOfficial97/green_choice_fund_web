@@ -12,7 +12,7 @@ class SolutionsMedia extends Model
 
     protected $table = 'solutions_media';
 
-    protected $fillable = ['id', 'image_url', 'solution_id', 'status'];
+    protected $fillable = ['id', 'media_url', 'solution_id', 'status'];
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 

@@ -58,23 +58,60 @@ class GeneralController extends ApiController
     {
 
         $data = $request->all();
-
-        $inquiryData = [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'country_code' => $data['country_code'],
-            'contact_no' => $data['contact_no'],
-            'address' => $data['address'],
-            'company_url' => isset($data['company_url']) ? $data['company_url'] : null,
-            'description' => isset($data['description']) ? $data['description'] : null,
-            'contact_reason_id' => $data['contact_reason_id'],
-            'user_id' => Auth::id()
-        ];
-
-        $institutionInquiry = InstitutionInquiry::create($inquiryData);
-
-        return $this->successResponse("Splash Metadata", $institutionInquiry);
+        $institutionInquiry = $this->generalService->saveInstitutionInquiry($data);
+        return $this->successResponse("Institution inquiry submitted", $institutionInquiry);
     }
+
+    public function saveInfographic(Request $request)
+    {
+
+        try {
+            $data = $request->all();
+
+            if ($files = request()->file('file')) {
+                $data['file'] = $this->uploadFiles($files, 'infographic');
+            } else {
+                return $this->errorResponse("Please upload image", null, 610, "Error", null, 200);
+            }
+
+            if ($this->generalService->saveInfographic($data)) {
+                $infographic = $this->generalService->getFirstInfographic();
+                $data = [
+                    'infographic' => asset('storage/' . $infographic->file_url)
+                ];
+                return $this->successResponse("New infographic added successfully", $data);
+            } else {
+                return $this->errorResponse("An issue occured", null, 500, "Error", null, 500);
+            }
+        } catch (\Throwable $th) {
+            return $this->exceptionResponse($th);
+        }
+    }
+
+    public function saveEULA(Request $request)
+    {
+
+        // try {
+            $data = $request->all();
+
+            if ($files = request()->file('file')) {
+                $data['file'] = $this->uploadFiles($files, 'eula');
+            } else {
+                return $this->errorResponse("Please upload image", null, 610, "Error", null, 200);
+            }
+
+            if ($this->generalService->saveEula($data)) {
+                $eula = $this->generalService->getFirstEula();
+                $eula->file_url = asset('storage/' . $eula->file_url);
+                return $this->successResponse("New eula added successfully", $eula);
+            } else {
+                return $this->errorResponse("An issue occured", null, 500, "Error", null, 500);
+            }
+        // } catch (\Throwable $th) {
+        //     return $this->exceptionResponse($th);
+        // }
+    }
+
 
     public function test()
     {

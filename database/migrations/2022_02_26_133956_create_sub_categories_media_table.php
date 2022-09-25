@@ -16,7 +16,7 @@ class CreateSubCategoriesMediaTable extends Migration
         Schema::create('sub_categories_media', function (Blueprint $table) {
             $table->id();
 
-            $table->string('image_url', 2048);
+            $table->string('media_url', 2048);
 
             $table->unsignedBigInteger('sub_category_id')->nullable()->index();
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')

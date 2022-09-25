@@ -25,9 +25,11 @@ use GeneaLabs\LaravelSocialiter\Facades\Socialiter;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\JWT;
 use Stripe;
+use App\Traits\StripeClient;
 
 class AuthController extends ApiController
 {
+    use StripeClient;
 
     public function login(AppUserLoginRequest $request)
     {
@@ -113,9 +115,8 @@ class AuthController extends ApiController
                 'status' => true
             ];
 
-            Stripe\Stripe::setApiKey(config('app_green_choice_fund.stripe_secret'));
-
-            $stripeUser = Stripe\Customer::create([
+            $stripe = $this->getStripeClient();
+            $stripeUser = $stripe->customers->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['country_code'] . ' ' . $data['contact_no'],
@@ -155,7 +156,7 @@ class AuthController extends ApiController
         } catch (\Throwable $th) {
             if (isset($stripeUser->id)) {
                 try {
-                    $stripe = new \Stripe\StripeClient(config('app_green_choice_fund.stripe_secret'));
+                    $stripe = $this->getStripeClient();
                     $stripe->customers->delete(
                         $stripeUser->id,
                         []

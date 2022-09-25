@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistService extends BaseService
 {
-    public function saveSubCategoryWishList($subCategory)
+    public function saveSubCategoryWishlist($subCategory)
     {
         $wishlist = null;
         if ($userId = Auth::user()->id) {
@@ -26,6 +26,17 @@ class WishlistService extends BaseService
         return $wishlist;
     }
 
+    public function deleteSubCategoryWishlist($data)
+    {
+        if (isset($data['sub_category_id'])) {
+            if ($wishlist = Wishlist::where(['sub_category_id' => $data['sub_category_id'], 'user_id' => Auth::user()->id])->first()) {
+                $wishlist->forceDelete();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getSubCategoriesWishlist($request, $api = false)
     {
         $userId = Auth::user()->id;
@@ -34,11 +45,10 @@ class WishlistService extends BaseService
 
         $query = SubCategory::query();
 
-        if ($api) {
-            $query->whereHas('subCategoryWishlist', function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            });
-        }
+        $query->whereHas('subCategoryWishlist', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        });
+
 
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');

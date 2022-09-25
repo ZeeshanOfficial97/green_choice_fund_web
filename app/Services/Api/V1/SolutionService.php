@@ -65,7 +65,7 @@ class SolutionService extends BaseService
 
         if (isset($data['image'])) {
             foreach ($data['image'] as $image) {
-                $mediaData[] = array('image_url' => $image['url'], 'solution_id' => $solution->id);
+                $mediaData[] = array('media_url' => $image['url'], 'solution_id' => $solution->id);
             }
             if (isset($mediaData) && isset($solution)) {
                 SolutionsMedia::insert($mediaData);

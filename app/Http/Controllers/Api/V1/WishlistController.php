@@ -23,29 +23,25 @@ class WishlistController extends ApiController
         $this->wishlistService = $wishlistService;
     }
 
-    public function saveSubCategoryWishList(SubCategory $subCategory)
+    public function saveSubCategoryWishlist(SubCategory $subCategory)
     {
         try {
 
             if ($wishlist = $this->wishlistService->saveSubCategoryWishList($subCategory)) {
-                return $this->successResponse("Added to wishlist successfully", $wishlist);
+                return $this->successResponse("Added to portfolio successfully!", $wishlist);
             } else {
-                $this->errorResponse("An issue occured", null, "Error", 500, 500);
+                $this->errorResponse("An error occured", null, "Error", 500, 500);
             }
         } catch (\Throwable $th) {
             $this->exceptionResponse($th);
         }
     }
 
-    public function deleteSubCategoryWishList(SubCategory $subCategory)
+    public function deleteSubCategoryWishlist(Request $request)
     {
         try {
-
-            if ($wishlist = $this->wishlistService->saveSubCategoryWishList($subCategory)) {
-                return $this->successResponse("Added to wishlist successfully", $wishlist);
-            } else {
-                $this->errorResponse("An issue occured", null, "Error", 500, 500);
-            }
+            $data = $this->wishlistService->deleteSubCategoryWishlist($request->all());
+            return $this->successResponse("Removed from portfolio successfully!", $data);
         } catch (\Throwable $th) {
             $this->exceptionResponse($th);
         }
@@ -56,5 +52,4 @@ class WishlistController extends ApiController
         $data = new SubCategoryResourceCollection($this->wishlistService->getSubCategoriesWishlist($request));
         return $this->successResponse("Wishlist", $data);
     }
-
 }

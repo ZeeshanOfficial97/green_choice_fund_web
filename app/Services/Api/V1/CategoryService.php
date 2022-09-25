@@ -58,7 +58,7 @@ class CategoryService extends BaseService
 
         if (isset($data['image'])) {
             foreach ($data['image'] as $image) {
-                $mediaData[] = array('image_url' => $image['url'], 'category_id' => $category->id);
+                $mediaData[] = array('media_url' => $image['url'], 'category_id' => $category->id, 'media_type' => $data['type']);
             }
 
             if (isset($data) && isset($category)) {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\ApiController;
-
+use App\Http\Resources\Solution\Api\V1\SolutionDetailResource;
 use App\Http\Resources\Solution\Api\V1\SolutionResource;
 use App\Http\Resources\Solution\Api\V1\SolutionResourceCollection;
 
@@ -32,12 +32,12 @@ class SolutionController extends ApiController
     public function getSolutionList(Request $request)
     {
         $data = new SolutionResourceCollection($this->solutionService->getSolutionList($request, true));
-        return $this->successResponse("Solution list", $data);
+        return $this->successResponse("Solutions list", $data);
     }
 
     public function getSolution(Solution $solution)
     {
-        $data = new SolutionResource($solution);
+        $data = new SolutionDetailResource($solution);
         return $this->successResponse("Solution", $data);
     }
 
@@ -62,5 +62,4 @@ class SolutionController extends ApiController
             return $this->exceptionResponse($th);
         }
     }
-
 }

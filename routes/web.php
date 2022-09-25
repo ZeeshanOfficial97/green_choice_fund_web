@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Web\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,5 @@ use App\Http\Controllers\Admin\CategoryController;
 |
 */
 
+Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');
