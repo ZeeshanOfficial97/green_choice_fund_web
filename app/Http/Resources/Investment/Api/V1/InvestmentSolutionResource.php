@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Resources\Category\Api\V1;
+namespace App\Http\Resources\Investment\Api\V1;
 
 use App\Http\Resources\Media\Api\V1\MediaResourceCollection;
+use App\Http\Resources\Solution\Api\V1\SolutionResource;
 use App\Http\Resources\Solution\Api\V1\SolutionResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class InvestmentSolutionResource extends JsonResource
     {
         return
         [
-            'solutions' => new SolutionResourceCollection($this->investmentSolution)
+            'solution' => new SolutionResource($this->investmentSolution)
         ];
     }
 }

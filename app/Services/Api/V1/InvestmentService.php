@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class InvestmentService extends BaseService
 {
     use PlaidClient, StripeClient;
-    public function getUserInvestmentsList($request, $api = false)
+    public function getUserInvestmentsList($request, $userId = null,  $api = false)
     {
         $columnArray = ['investment_num', 'name', 'email', 'invested_amount', 'investment_status'];
 
@@ -26,6 +26,10 @@ class InvestmentService extends BaseService
         $derivedColKeys = [];
 
         $query = UserInvestment::query();
+
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
 
         if ($request->search) {
             $query->where('investment_num', 'like', '%' . $request->search . '%');
@@ -54,24 +58,28 @@ class InvestmentService extends BaseService
         return $data;
     }
 
-    public function getUserInvestment($request, $api = false)
+    public function getUserInvestment($request, $userId = null, $api = false)
     {
 
-        $data = false;
+        $data = null;
         $query = UserInvestment::query();
 
-        if ($request->has('id')) {
-            $query->where('id', $request->get('id'));
-        } else if ($request->has('investment_num')) {
-            $query->where('id', $request->get('id'));
+        if ($userId) {
+            $query->where('user_id', $userId);
         }
 
         if ($api) {
-            $data = $query->where('status',  1)->get();
+            $query->where('status',  1);
         } else {
             if (in_array($request->status, [0, 1])) {
-                $data = $query->where('status', $request->status)->get();
+                $query->where('status', $request->status);
             }
+        }
+
+        if ($request->get('id')) {
+            $data = $query->where('id', '=', $request->get('id'))->first();
+        } else if ($request->get('investment_num')) {
+            $data = $query->where('investment_num', '=', $request->get('investment_num'))->first();
         }
 
         return $data;
@@ -102,7 +110,8 @@ class InvestmentService extends BaseService
             'dob'  => $dob,
             'address' => $address,
             'invested_amount' => $investment_amount,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'investment_status' => UserInvestment::ORDER_STATUS_INDEX['NewOrder']
         ];
 
         $investment = UserInvestment::create($investmentData);
@@ -134,7 +143,7 @@ class InvestmentService extends BaseService
 
     public function clearCart()
     {
-        Cart::where('user_id',Auth::user()->id)->forceDelete();
+        Cart::where('user_id', Auth::user()->id)->forceDelete();
         return true;
     }
 

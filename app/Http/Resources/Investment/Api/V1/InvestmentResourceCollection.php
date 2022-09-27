@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Category\Api\V1;
+namespace App\Http\Resources\Investment\Api\V1;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Route;

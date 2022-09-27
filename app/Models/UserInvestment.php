@@ -13,9 +13,24 @@ class UserInvestment extends Model
         'investment_num', 'name', 'email', 'country_code', 'contact_no', 'address', 'dob', 'invested_amount', 'user_id', 'stripe_charge_id',
         'investment_status', 'status'
     ];
-    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['updated_at', 'deleted_at'];
     protected $casts = ['status' => 'boolean'];
 
+    public const ORDER_STATUS = array(
+        'New Order'
+    );
+    public const ORDER_BG_CLR = array(
+        '#FF0000'
+    );
+
+    public const ORDER_TEXT_CLR = array(
+        '#FFFFFF'
+    );
+
+
+    public const ORDER_STATUS_INDEX = [
+        'NewOrder' => 0
+    ];
 
     public function userInvestmentSolution()
     {

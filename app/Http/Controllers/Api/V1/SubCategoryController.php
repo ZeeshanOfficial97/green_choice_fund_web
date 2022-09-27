@@ -8,7 +8,7 @@ use App\Http\Resources\SubCategory\Api\V1\SubCategoryResource;
 use App\Http\Resources\SubCategory\Api\V1\SubCategoryResourceCollection;
 
 use App\Models\SubCategory;
-use App\Services\SubCategoryService;
+use App\Services\Api\V1\SubCategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

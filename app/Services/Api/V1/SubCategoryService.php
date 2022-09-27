@@ -64,7 +64,7 @@ class SubCategoryService extends BaseService
 
         if (isset($data['image'])) {
             foreach ($data['image'] as $image) {
-                $mediaData[] = array('image_url' => $image['url'], 'sub_category_id' => $subCategory->id);
+                $mediaData[] = array('media_url' => $image['url'], 'sub_category_id' => $subCategory->id);
             }
             if (isset($mediaData) && isset($subCategory)) {
                 SubCategoriesMedia::insert($mediaData);

@@ -20,12 +20,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-use Socialite;
+// use Socialite;
+use Laravel\Socialite\Facades\Socialite;
 use GeneaLabs\LaravelSocialiter\Facades\Socialiter;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\JWT;
-use Stripe;
 use App\Traits\StripeClient;
+use Namshi\JOSE\JWT;
 
 class AuthController extends ApiController
 {
@@ -276,23 +276,25 @@ class AuthController extends ApiController
     public function logout(Request $request)
     {
         try {
-            if (!$request->has('push_notification_id') || !$request->has('device_token') || !$request->has('device_id')) {
-                $errors = [
-                    'push_notification_id' => ['Push notification id is required'],
-                    'device_token' => ['Device token is required'],
-                    'device_token' => ['Device token is required']
-                ];
-                return $this->errorResponse('Push notification id, device token or device id is required', $errors, 610);
-            }
+            // if (!$request->has('push_notification_id') || !$request->has('device_token') || !$request->has('device_id')) {
+            //     $errors = [
+            //         'push_notification_id' => ['Push notification id is required'],
+            //         'device_token' => ['Device token is required'],
+            //         'device_id' => ['Device id is required']
+            //     ];
+            //     return $this->errorResponse('Push notification id, device token or device id is required', $errors, 610);
+            // }
             if ($request->has('push_notification_id')) {
-                PushNotificationUser::where('id', $request['push_notification_id'])->delete();
+                PushNotificationUser::where('id', $request['push_notification_id'])->forceDelete();
             } else if ($request->has('device_token')) {
-                PushNotificationUser::where('device_token', $request['device_token'])->delete();
+                PushNotificationUser::where('device_token', $request['device_token'])->forceDelete();
             } else if ($request->has('device_id')) {
-                PushNotificationUser::where('device_id', $request['device_id'])->delete();
+                PushNotificationUser::where('device_id', $request['device_id'])->forceDelete();
             }
 
             auth('api')->logout();
+            $forever = true;
+            JWTAuth::parseToken()->invalidate($forever);
 
             return $this->successResponse("User logged out successfully");
         } catch (\Throwable $th) {
@@ -319,7 +321,10 @@ class AuthController extends ApiController
         }
 
         $provider = $request->input('provider');
+        dd(JWT::decode($request->input('access_token'), 'YJ6JmkRcHOaDo6ZAm-q27w', array('HS256')));
 
+        $user = Socialite::driver('google')->scopes(['profile', 'email'])->userFromToken($request->input('access_token'));
+        dd($user);
         switch ($provider) {
             case 'facebook':
                 $social_user = Socialite::driver('facebook');
@@ -339,7 +344,6 @@ class AuthController extends ApiController
             return $this->errorResponse($errors['provider'], $errors, 610);
         }
         // try {
-        // dd(JWT::decode($request->input('access_token'), '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', array('HS256')));
         $social_user_details = Socialite::driver('google')->stateless()->userFromToken($request->input('access_token'));
         // } catch (\Exception $e) {
         //     $errors = ['access_token' => ['Access token is invalid']];
