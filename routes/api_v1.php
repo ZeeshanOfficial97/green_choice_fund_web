@@ -42,10 +42,10 @@ Route::prefix('category')->group(function () {
 });
 
 
-Route::prefix('sub-category')->group(function () {
-    Route::get('/', [SubCategoryController::class, 'getSubCategoryList']);
-    Route::get('/{subCategory}', [SubCategoryController::class, 'getSubCategory']);
-});
+// Route::prefix('sub-category')->group(function () {
+//     Route::get('/', [SubCategoryController::class, 'getSubCategoryList']);
+//     Route::get('/{subCategory}', [SubCategoryController::class, 'getSubCategory']);
+// });
 
 
 Route::prefix('solution')->group(function () {
@@ -69,9 +69,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/', [CategoryController::class, 'saveCategory']);
     });
 
-    Route::prefix('sub-category')->group(function () {
-        Route::post('/', [SubCategoryController::class, 'saveSubCategory']);
-    });
+    // Route::prefix('sub-category')->group(function () {
+    //     Route::post('/', [SubCategoryController::class, 'saveSubCategory']);
+    // });
 
 
     Route::prefix('solution')->group(function () {
@@ -79,9 +79,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::prefix('wishlist')->group(function () {
-        Route::post('/remove', [WishListController::class, 'deleteSubCategoryWishlist']);
-        Route::post('/{subCategory}', [WishListController::class, 'saveSubCategoryWishlist']);
-        Route::get('/', [WishlistController::class, 'getSubCategoriesWishlist']);
+        Route::post('/remove', [WishListController::class, 'deleteSolutionWishlist']);
+        Route::post('/{solution}', [WishListController::class, 'saveSolutionWishlist']);
+        Route::get('/', [WishlistController::class, 'getSolutionsWishlist']);
     });
 
     Route::prefix('cart')->group(function () {
@@ -91,7 +91,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('/count', [CartController::class, 'cartItemsCount']);
     });
 
-    Route::prefix('institution_inquiry')->group(function () {
+    Route::prefix('institution-inquiry')->group(function () {
         Route::post('/', [GeneralController::class, 'saveInstitutionInquiry']);
     });
 

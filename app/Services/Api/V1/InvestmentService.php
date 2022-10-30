@@ -46,7 +46,7 @@ class InvestmentService extends BaseService
         if ($request->column && $request->dir && in_array($request->column, $columnArray) && in_array($request->dir, $ascArray)) {
             $query = $query->orderBy($request->column,  $request->dir);
         } else {
-            $query = $query->orderBy('id',  'asc');
+            $query = $query->orderBy('id',  'desc');
         }
 
         $pageSize = 10;

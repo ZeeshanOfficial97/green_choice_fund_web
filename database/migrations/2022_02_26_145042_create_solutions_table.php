@@ -22,8 +22,8 @@ class CreateSolutionsTable extends Migration
             $table->boolean('published')->default(false);
             $table->boolean('status')->default(true);
 
-            $table->unsignedBigInteger('sub_category_id')->nullable()->index();
-            $table->foreign('sub_category_id')->references('id')->on('sub_categories')
+            $table->unsignedBigInteger('category_id')->nullable()->index();
+            $table->foreign('category_id')->references('id')->on('categories')
                 ->onUpdate('cascade')
                 ->onDelete('set null');
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::updateOrCreate(['email' => 'admin@gmail.com'], [
+        $userCreated = User::updateOrCreate(['email' => 'admin@gmail.com'], [
             'name' => 'Super Admin',
             'email' => 'admin@gmail.com',
             'email_verified_at' => \Carbon\Carbon::now(),
@@ -28,5 +29,10 @@ class UserSeeder extends Seeder
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now()
         ])->assignRole('super_admin');
+
+        $super_admin = Role::findByName('super_admin', 'api');
+        if ($super_admin) {
+            $userCreated->assignRole($super_admin);
+        }
     }
 }

@@ -11,13 +11,13 @@ class Solution extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'published', 'status', 'sub_category_id'];
+    protected $fillable = ['name', 'description', 'published', 'status', 'category_id'];
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
     protected $casts = ['status' => 'boolean'];
 
-    protected $appends = ['added_to_cart'];
+    protected $appends = ['added_to_cart', 'is_wishlisted'];
 
     public function solutionMedia()
     {
@@ -31,5 +31,20 @@ class Solution extends Model
         } else {
             return false;
         }
+    }
+
+    public function getIsWishlistedAttribute()
+    {
+        if ($user = Auth::guard('api')->user()) {
+            return Wishlist::where(['solution_id' => $this->id, 'user_id' => $user->id])->first() ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function solutionWishlist()
+    {
+        return $this->hasMany(Wishlist::class, 'solution_id', 'id');
     }
 }

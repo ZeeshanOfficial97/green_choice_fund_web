@@ -25,7 +25,10 @@ use Laravel\Socialite\Facades\Socialite;
 use GeneaLabs\LaravelSocialiter\Facades\Socialiter;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Traits\StripeClient;
+use Exception;
 use Namshi\JOSE\JWT;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends ApiController
 {
@@ -109,7 +112,7 @@ class AuthController extends ApiController
                 'contact_no' => $request['contact_no'],
                 'profile_photo_path' => '',
                 'email_verified_at' => \Carbon\Carbon::now(),
-                'privacy_policy_version' => "1.0",
+                'privacy_policy_version' => config('app_green_choice_fund.privacy_policy_version', '1.0'),
                 'is_notification_enabled' => true,
                 'user_type_id' => $request['user_type_id'],
                 'status' => true
@@ -126,8 +129,11 @@ class AuthController extends ApiController
             $data['stripe_user_id'] = $stripeUser->id;
 
             DB::beginTransaction();
-
-            $userCreated = User::create($data)->assignRole('app_user');
+            $app_user = Role::findByName('app_user', 'api');
+            if ($app_user == null) {
+                throw new Exception();
+            }
+            $userCreated = User::create($data)->assignRole($app_user);
 
             $push_notifications = PushNotificationUser::updateOrCreate(['device_token' => $request->device_token], [
                 'device_token' => $request->device_token,
@@ -185,7 +191,16 @@ class AuthController extends ApiController
             if ($user = User::where('id', Auth::id())->first()) {
                 if ($request->get('password') != null) {
                     if (Hash::check($request->get('password'), $user->password)) {
+                        DB::beginTransaction();
+
+                        PushNotificationUser::where('user_id', $user->id)->forceDelete();
                         $user->delete();
+
+                        auth('api')->logout();
+                        $forever = true;
+                        JWTAuth::parseToken()->invalidate($forever);
+
+                        DB::commit();
                         return $this->successResponse("User data deleted successfully", true);
                     } else {
                         return $this->errorResponse("Sorry, we do not recognize these credentials", null, 610);
@@ -194,6 +209,7 @@ class AuthController extends ApiController
             }
             return $this->errorResponse("User not found", null, 404, statusCode: 404);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return $this->exceptionResponse($th);
         }
     }
@@ -296,7 +312,7 @@ class AuthController extends ApiController
             $forever = true;
             JWTAuth::parseToken()->invalidate($forever);
 
-            return $this->successResponse("User logged out successfully");
+            return $this->successResponse("User logged out successfully",true);
         } catch (\Throwable $th) {
             return $this->exceptionResponse($th);
         }
@@ -321,10 +337,7 @@ class AuthController extends ApiController
         }
 
         $provider = $request->input('provider');
-        dd(JWT::decode($request->input('access_token'), 'YJ6JmkRcHOaDo6ZAm-q27w', array('HS256')));
 
-        $user = Socialite::driver('google')->scopes(['profile', 'email'])->userFromToken($request->input('access_token'));
-        dd($user);
         switch ($provider) {
             case 'facebook':
                 $social_user = Socialite::driver('facebook');
@@ -343,25 +356,38 @@ class AuthController extends ApiController
             $errors = ['provider' => ['Provider is invalid']];
             return $this->errorResponse($errors['provider'], $errors, 610);
         }
-        // try {
-        $social_user_details = Socialite::driver('google')->stateless()->userFromToken($request->input('access_token'));
-        // } catch (\Exception $e) {
-        //     $errors = ['access_token' => ['Access token is invalid']];
-        //     return $this->errorResponse($errors['access_token'], $errors, 610);
-        // }
 
-        dd($request->input('access_token'));
-        if ($social_user_details == null) {
-            $errors = ['access_token' => ['Access token is invalid']];
-            return $this->errorResponse($errors['access_token'], $errors, 610);
+        Log::info('Log Start All');
+        Log::info(json_encode($request->all()));
+        Log::info('Log End All');
+        $userInfo = null;
+        if ($provider == 'google') {
+            if ($request->get('user_info') == null) {
+                return $this->errorResponse("User details not found");
+            }
+            $userInfo = $request->get('user_info');
+        } else {
+            try {
+                $social_user_details = $social_user->userFromToken($request->input('access_token'));
+            } catch (\Exception $e) {
+                $errors = ['access_token' => ['Access token is invalid']];
+                return $this->errorResponse($errors['access_token'], $errors, 610);
+            }
+
+            if ($social_user_details == null) {
+                $errors = ['access_token' => ['Access token is invalid']];
+                return $this->errorResponse($errors['access_token'], $errors, 610);
+            }
         }
 
-        $user = User::where("email", $social_user_details->getEmail())->first();
+        $user = User::where("email", $provider == 'google' ? $userInfo['email'] : $social_user_details->getEmail())->first();
+
         DB::beginTransaction();
+
         if (!$user) {
             $social_account = SocialAccount::create([
                 'provider' => $provider,
-                'provider_user_id' => $social_user_details->id
+                'provider_user_id' => $provider == 'google' ? $userInfo['uid'] : $social_user_details->id
             ]);
             $user = new User;
             switch ($provider) {
@@ -370,24 +396,45 @@ class AuthController extends ApiController
                     $user->profile_photo_path = $social_user_details->avatar;
                     break;
                 case 'google':
-                    $user->name = $social_user_details->user['name'];
-                    $user->profile_photo_path = $social_user_details->user['picture'];
+                    $user->name = $userInfo['name'];
+                    $user->email_verified_at = \Carbon\Carbon::now();
+                    $user->profile_photo_path = $userInfo['picture'];
+
+                    // $user->name = $social_user_details->user['name'];
+                    // $user->profile_photo_path = $social_user_details->user['picture'];
                     break;
                 case 'apple':
-                    $user->name = 'Apple User';
+                    Log::info('Log Start Apple');
+                    Log::info(json_encode($social_user_details));
+                    Log::info('Log End Apple');
+                    $user->name = $social_user_details->name ? $social_user_details->name : 'Apple User';
                     break;
             }
-            $user->email = $social_user_details->getEmail();
-            $user->password = Hash::make('miami_socia_login_void_soft_tech');
+
+
+            $user->email = $provider == 'google' ? $userInfo['email'] : $social_user_details->getEmail();
+            $user->password = Hash::make('green_choice_fund_with_socia_login');
             $user->social_account_id = $social_account->id;
-            $user->privacy_policy_version = config('app_miami.privacy_policy_version');
+            $user->privacy_policy_version = config('app_green_choice_fund.privacy_policy_version', '1.0');
             $user->is_notification_enabled = true;
             $user->status = true;
 
+            $stripe = $this->getStripeClient();
+            $stripeUser = $stripe->customers->create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'description' => "greenchoicefund.com platform's user",
+            ]);
+            $user->stripe_user_id = $stripeUser->id;
+
             $user->save();
-            $user->assignRole('app_user');
+            $app_user = Role::findByName('app_user', 'api');
+            if ($app_user == null) {
+                throw new Exception();
+            }
+            $user->assignRole($app_user);
         }
-        $userInDB = User::where("email", $social_user_details->getEmail())->first();
+        $userInDB = User::where("email", $provider == 'google' ? $userInfo['email'] : $social_user_details->getEmail())->first();
 
         if (!$userInDB->status) {
             $errors = ['disabled' => ['This account has been disabled. Please contact support']];
@@ -398,7 +445,8 @@ class AuthController extends ApiController
             return $this->errorResponse('This email is already registered. Use email and password to login', null, 610);
         }
 
-        if (!Hash::check(Hash::make('miami_socia_login_void_soft_tech'), $userInDB->password)) {
+
+        if (!Hash::check('green_choice_fund_with_socia_login', $userInDB->password)) {
             $errors = ['password' => ['Incorrect old password']];
             return $this->errorResponse('Password is already set for this account. Use email and password to login', null, 610);
         }

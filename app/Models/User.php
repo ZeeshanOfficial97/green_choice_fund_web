@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -56,7 +57,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime', 'status' => 'boolean'
+        'email_verified_at' => 'datetime', 'status' => 'boolean',
+        'user_type_id' => 'string', 'is_notification_enabled' => 'boolean'
     ];
 
     protected $appends = [
@@ -93,9 +95,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function getProfilePhotoUrlAttribute()
     {
-        return $this->profile_photo_path
-            ? asset('storage/' . $this->profile_photo_path)
-            : $this->defaultProfilePhotoUrl();
+        if (str_starts_with($this->profile_photo_path, 'http')) {
+            return $this->profile_photo_path;
+        } else {
+            return $this->profile_photo_path
+                ? asset('storage/' . $this->profile_photo_path)
+                : $this->defaultProfilePhotoUrl();
+        }
     }
 
     private function defaultProfilePhotoUrl()

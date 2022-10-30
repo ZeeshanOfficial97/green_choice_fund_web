@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\Solution\Api\V1\SolutionResourceCollection;
 use App\Http\Resources\SubCategory\Api\V1\SubCategoryResourceCollection;
+use App\Models\Solution;
 use App\Models\SubCategory;
 use App\Services\Api\V1\WishlistService;
 use Illuminate\Http\Request;
@@ -23,11 +25,11 @@ class WishlistController extends ApiController
         $this->wishlistService = $wishlistService;
     }
 
-    public function saveSubCategoryWishlist(SubCategory $subCategory)
+    public function saveSolutionWishlist(Solution $solution)
     {
         try {
 
-            if ($wishlist = $this->wishlistService->saveSubCategoryWishList($subCategory)) {
+            if ($wishlist = $this->wishlistService->saveSolutionWishlist($solution)) {
                 return $this->successResponse("Added to portfolio successfully!", $wishlist);
             } else {
                 $this->errorResponse("An error occured", null, "Error", 500, 500);
@@ -37,19 +39,19 @@ class WishlistController extends ApiController
         }
     }
 
-    public function deleteSubCategoryWishlist(Request $request)
+    public function deleteSolutionWishlist(Request $request)
     {
         try {
-            $data = $this->wishlistService->deleteSubCategoryWishlist($request->all());
+            $data = $this->wishlistService->deleteSolutionWishlist($request->all());
             return $this->successResponse("Removed from portfolio successfully!", $data);
         } catch (\Throwable $th) {
             $this->exceptionResponse($th);
         }
     }
 
-    public function getSubCategoriesWishlist(Request $request)
+    public function getSolutionsWishlist(Request $request)
     {
-        $data = new SubCategoryResourceCollection($this->wishlistService->getSubCategoriesWishlist($request));
+        $data = new SolutionResourceCollection($this->wishlistService->getSolutionsWishlist($request));
         return $this->successResponse("Wishlist", $data);
     }
 }

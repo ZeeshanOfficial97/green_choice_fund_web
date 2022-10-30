@@ -15,8 +15,8 @@ class CreateWishlistsTable extends Migration
     {
         Schema::create('wishlists', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sub_category_id')->nullable()->index();
-            $table->foreign('sub_category_id')->references('id')->on('sub_categories')
+            $table->unsignedBigInteger('solution_id')->nullable()->index();
+            $table->foreign('solution_id')->references('id')->on('solutions')
                 ->onUpdate('cascade')
                 ->onDelete('set null');
 

@@ -58,7 +58,7 @@ class SolutionService extends BaseService
             'name' => $data['name'],
             'description' => $data['description'],
             'published' => $data['published'],
-            'sub_category_id' => $data['sub_category_id']
+            'category_id' => $data['category_id']
         );
 
         $solution = Solution::create($solutionData);

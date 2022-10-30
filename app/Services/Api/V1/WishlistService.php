@@ -3,6 +3,7 @@
 namespace App\Services\Api\V1;
 
 use App\Models\ProductVariant;
+use App\Models\Solution;
 use App\Models\SubCategory;
 use App\Models\Wishlist;
 use App\Services\BaseService;
@@ -10,26 +11,27 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistService extends BaseService
 {
-    public function saveSubCategoryWishlist($subCategory)
+    public function saveSolutionWishlist($solution)
     {
         $wishlist = null;
         if ($userId = Auth::user()->id) {
             $wishlist = Wishlist::updateOrCreate(
-                ['sub_category_id' => $subCategory->id, 'user_id' => $userId],
+                ['solution_id' => $solution->id, 'user_id' => $userId],
                 [
-                    'sub_category_id' => $subCategory->id,
+                    'solution_id' => $solution->id,
                     'user_id' => $userId
                 ]
             );
+            $wishlist['status'] = true;
         }
 
         return $wishlist;
     }
 
-    public function deleteSubCategoryWishlist($data)
+    public function deleteSolutionWishlist($data)
     {
-        if (isset($data['sub_category_id'])) {
-            if ($wishlist = Wishlist::where(['sub_category_id' => $data['sub_category_id'], 'user_id' => Auth::user()->id])->first()) {
+        if (isset($data['solution_id'])) {
+            if ($wishlist = Wishlist::where(['solution_id' => $data['solution_id'], 'user_id' => Auth::user()->id])->first()) {
                 $wishlist->forceDelete();
                 return true;
             }
@@ -37,15 +39,15 @@ class WishlistService extends BaseService
         return false;
     }
 
-    public function getSubCategoriesWishlist($request, $api = false)
+    public function getSolutionsWishlist($request, $api = false)
     {
         $userId = Auth::user()->id;
         $columnArray = ['id'];
         $ascArray = ['desc', 'asc'];
 
-        $query = SubCategory::query();
+        $query = Solution::query();
 
-        $query->whereHas('subCategoryWishlist', function ($q) use ($userId) {
+        $query->whereHas('solutionWishlist', function ($q) use ($userId) {
             $q->where('user_id', $userId);
         });
 

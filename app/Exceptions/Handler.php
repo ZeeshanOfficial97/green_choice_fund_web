@@ -79,22 +79,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // if ($request->is('api/*')) {
-        //     if ($exception instanceof TokenInvalidException) {
-        //         return $this->errorResponse('Token is Invalid', code: 401, statusCode: 401);
-        //     }
-        //     if ($exception instanceof TokenExpiredException) {
-        //         return $this->errorResponse('Token is Expired', code: 401, statusCode: 401);
-        //     }
-        //     if ($exception instanceof JWTException) {
-        //         return $this->errorResponse('Token not parsed', code: 401, statusCode: 401);
-        //     }
-        //     return $this->handleApiException($request, $exception);
-        // } else {
-        //     return $this->exceptionResponse($exception);
-        //     return response()->view('custom.500', array(), 500);
-        return $retval = parent::render($request, $exception);
-        // }
+        if ($request->is('api/*')) {
+            if ($exception instanceof TokenInvalidException) {
+                return $this->errorResponse('Token is Invalid', code: 401, statusCode: 401);
+            }
+            if ($exception instanceof TokenExpiredException) {
+                return $this->errorResponse('Token is Expired', code: 401, statusCode: 401);
+            }
+            if ($exception instanceof JWTException) {
+                return $this->errorResponse('Token not parsed', code: 401, statusCode: 401);
+            }
+            return $this->handleApiException($request, $exception);
+        } else {
+            return $this->exceptionResponse($exception);
+            return response()->view('custom.500', array(), 500);
+            return $retval = parent::render($request, $exception);
+        }
     }
 
     private function handleApiException($request, Throwable $exception)

@@ -18,14 +18,14 @@ class RoleSeeder extends Seeder
         Role::updateOrCreate(['name' => 'super_admin'], [
             'name' => 'super_admin',
             'slug' => 'Super Admin',
-            'guard_name' => 'web',
+            'guard_name' => 'api',
             'admin_role' => true
         ]);
 
         Role::updateOrCreate(['name' => 'admin'], [
             'name' => 'admin',
             'slug' => 'Admin',
-            'guard_name' => 'web',
+            'guard_name' => 'api',
             'admin_role' => true
         ]);
 
@@ -39,7 +39,7 @@ class RoleSeeder extends Seeder
         Role::updateOrCreate(['name' => 'app_user'], [
             'name' => 'app_user',
             'slug' => 'App User',
-            'guard_name' => 'web',
+            'guard_name' => 'api',
             'admin_role' => false
         ]);
     }

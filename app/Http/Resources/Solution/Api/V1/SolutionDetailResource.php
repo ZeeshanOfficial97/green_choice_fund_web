@@ -20,7 +20,7 @@ class SolutionDetailResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'sub_category_id' => $this->sub_category_id,
+            'category_id' => $this->category_id,
             'added_to_cart' => $this->added_to_cart,
             'solution_media' => new MediaResourceCollection($this->solutionMedia)
         ];

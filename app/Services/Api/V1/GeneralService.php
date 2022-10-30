@@ -65,7 +65,7 @@ class GeneralService extends BaseService
 
         if (isset($data['file'])) {
             foreach ($data['file'] as $file) {
-                $mediaData[] = array(
+                $fileData[] = array(
                     'file_url' => $file['url'],
                     'name' => 'Infographic',
                     'description' => 'Infographic'
