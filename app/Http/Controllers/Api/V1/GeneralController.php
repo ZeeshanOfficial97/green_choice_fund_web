@@ -35,12 +35,15 @@ class GeneralController extends ApiController
         $contactUsReason = $this->generalService->getContactUsReasons();
         $infoUrl = $this->generalService->getInfoUrls();
         $infographic = $this->generalService->getFirstInfographic();
+        $eula = $this->generalService->getFirstEULA();
 
         $data = [
             'userType' => $userType,
             'contactUsReason' => $contactUsReason,
             'infoUrl' => $infoUrl,
-            'infographic' => asset('storage/' . $infographic->file_url)
+            'infographic' => asset('storage/' . $infographic->file_url),
+            'eula' => asset('storage/' . $eula->file_url),
+            'stripe_payment_url' => config('app_green_choice_fund.stripe_payment_url')
         ];
 
         return $this->successResponse("Splash Metadata", $data);

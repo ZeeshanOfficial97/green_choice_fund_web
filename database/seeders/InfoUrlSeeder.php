@@ -17,28 +17,28 @@ class InfoUrlSeeder extends Seeder
         InfoUrl::updateOrCreate(['url_key' => 'privacy_policy'], [
             'url_key' => 'privacy_policy',
             'url_version' => '1.0',
-            'url_web' => 'https://master-miami.com/privacy-policy/',
+            'url_web' => 'https://greenchoicefund.com/privacy-policy/',
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 
         InfoUrl::updateOrCreate(['url_key' => 'terms_and_condition'], [
             'url_key' => 'terms_and_condition',
             'url_version' => '1.0',
-            'url_web' => 'https://master-miami.com/privacy-policy/',
+            'url_web' => 'https://greenchoicefund.com/privacy-policy/',
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 
         InfoUrl::updateOrCreate(['url_key' => 'faq'], [
             'url_key' => 'faq',
             'url_version' => '1.0',
-            'url_web' => 'https://master-miami.com/',
+            'url_web' => 'https://greenchoicefund.com/',
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 
         InfoUrl::updateOrCreate(['url_key' => 'about_us'], [
             'url_key' => 'about_us',
             'url_version' => '1.0',
-            'url_web' => 'https://master-miami.com/',
+            'url_web' => 'https://greenchoicefund.com/',
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 

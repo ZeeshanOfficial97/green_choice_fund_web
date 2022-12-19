@@ -219,16 +219,16 @@ export default {
               password: this.password,
             })
             .then(response => {
-              debugger
+
               const { user } = response.data.data
-              user.role = user?.roles[0]?.name || ''
+              user.role = user?.roles[0]?.slug || ''
               user.ability = [
                 {
                   action: 'manage',
                   subject: 'all',
                 }]
               useJwt.setToken(response.data.data.accessToken)
-              useJwt.setRefreshToken(response.data.data.refreshToken)
+              useJwt.setRefreshToken(response.data.data.accessToken)
               localStorage.setItem('userData', JSON.stringify(user))
               this.$ability.update(user.ability)
 
@@ -237,7 +237,7 @@ export default {
               //   this.$store.commit('app-ecommerce/UPDATE_CART_ITEMS_COUNT', userData.extras.eCommerceCartItemsCount)
 
               // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
-              this.$router.replace(getHomeRouteForLoggedInUser(user.role)).then(() => {
+              this.$router.replace(getHomeRouteForLoggedInUser(user?.roles[0]?.name || '')).then(() => {
                 this.$toast({
                   component: ToastificationContent,
                   position: 'bottom-right',

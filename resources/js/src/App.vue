@@ -8,7 +8,7 @@
       <router-view />
     </component>
 
-    <buy-now />
+    <!-- <buy-now /> -->
     <scroll-to-top v-if="enableScrollToTop" />
   </div>
 </template>

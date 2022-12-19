@@ -20,7 +20,7 @@ class LookupSeeder extends Seeder
         Lookup::updateOrCreate(['id' => 1, 'name' => 'Normal user', 'group_code' => 1], [
             'id' => 1,
             'name' => 'Normal user',
-            'description' => 'Type 1',
+            'description' => 'User Type 1',
             'group_code' => 1,
             'status' => 1
         ]);
@@ -28,7 +28,7 @@ class LookupSeeder extends Seeder
         Lookup::updateOrCreate(['id' => 2, 'name' => 'Institution user', 'group_code' => 1], [
             'id' => 2,
             'name' => 'Institution user',
-            'description' => 'Type 1',
+            'description' => 'User Type 1',
             'group_code' => 1,
             'status' => 1
         ]);
@@ -125,13 +125,13 @@ class LookupSeeder extends Seeder
 
         Lookup::updateOrCreate(['id' => 62, 'name' => 'ICO', 'group_code' => 2], [
             'id' => 62,
-            'name' => 'Blockchain',
+            'name' => 'ICO',
             'group_code' => 2,
             'description' => 'Contact us reason for investment',
             'status' => 1
         ]);
 
-        Lookup::updateOrCreate(['id' => 63, 'name' => 'ICO', 'group_code' => 2], [
+        Lookup::updateOrCreate(['id' => 63, 'name' => 'Governance', 'group_code' => 2], [
             'id' => 63,
             'name' => 'Governance',
             'group_code' => 2,
@@ -141,7 +141,7 @@ class LookupSeeder extends Seeder
 
         Eula::updateOrCreate(['name' => 'Eula'],[
             'name' => 'Eula',
-            'file_url' => 'eula\dummy.pdf',
+            'file_url' => 'eula\eula.pdf',
             'description' => 'End user license agreement',
             'status' => 1
         ]);

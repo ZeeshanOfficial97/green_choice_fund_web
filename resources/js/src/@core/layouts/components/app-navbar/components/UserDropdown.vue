@@ -7,7 +7,7 @@
     <template #button-content>
       <div class="d-sm-flex d-none user-nav">
         <p class="user-name font-weight-bolder mb-0">
-          {{ userData.fullName || userData.username }}
+          {{ userData.name || userData.name }}
         </p>
         <span class="user-status">{{ userData.role }}</span>
       </div>
@@ -20,14 +20,14 @@
         badge-variant="success"
       >
         <feather-icon
-          v-if="!userData.fullName"
+          v-if="!userData.name"
           icon="UserIcon"
           size="22"
         />
       </b-avatar>
     </template>
 
-    <b-dropdown-item
+    <!-- <b-dropdown-item
       :to="{ name: 'pages-profile'}"
       link-class="d-flex align-items-center"
     >
@@ -106,7 +106,7 @@
         class="mr-50"
       />
       <span>FAQ</span>
-    </b-dropdown-item>
+    </b-dropdown-item> -->
     <b-dropdown-item
       link-class="d-flex align-items-center"
       @click="logout"
@@ -143,6 +143,7 @@ export default {
   },
   methods: {
     logout() {
+      
       // Remove userData from localStorage
       // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
       localStorage.removeItem(useJwt.jwtConfig.storageTokenKeyName)

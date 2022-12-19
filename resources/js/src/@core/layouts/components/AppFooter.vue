@@ -1,6 +1,6 @@
 <template>
   <p class="clearfix mb-0">
-    <span class="float-md-left d-block d-md-inline-block mt-25">
+    <!-- <span class="float-md-left d-block d-md-inline-block mt-25">
       COPYRIGHT  © {{ new Date().getFullYear() }}
       <b-link
         class="ml-25"
@@ -16,7 +16,7 @@
         size="21"
         class="text-danger stroke-current"
       />
-    </span>
+    </span> -->
   </p>
 </template>
 

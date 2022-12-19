@@ -66,6 +66,12 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
+    public const USER_TYPE = [
+        '',
+        'Normal user',
+        'Institution User'
+    ];
+
     // Rest omitted for brevity
 
     /**

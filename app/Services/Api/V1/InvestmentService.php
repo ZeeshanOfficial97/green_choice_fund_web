@@ -99,6 +99,7 @@ class InvestmentService extends BaseService
         $address = $request->get('address');
         $investment_amount = $request->get('investment_amount');
         $solution_ids = $request->get('solution_ids');
+        $solution_ids =  Cart::where('user_id', $user->id)->pluck('solution_id')->toArray();
 
 
         $investmentData = [
@@ -111,7 +112,7 @@ class InvestmentService extends BaseService
             'address' => $address,
             'invested_amount' => $investment_amount,
             'user_id' => $user->id,
-            'investment_status' => UserInvestment::ORDER_STATUS_INDEX['NewOrder']
+            'investment_status' => 0//UserInvestment::ORDER_STATUS_INDEX['Pending']
         ];
 
         $investment = UserInvestment::create($investmentData);
@@ -121,6 +122,15 @@ class InvestmentService extends BaseService
                 $investmentSolutions[] = array('investment_id' => $investment->id, 'solution_id' => $id, 'user_id' => $user->id);
             }
 
+            if (isset($investmentSolutions)) {
+                UserInvestmentSolution::insert($investmentSolutions);
+            }
+        } else {
+            $solution_ids = Cart::where('user_id', Auth::user()->id)->pluck('solution_id');
+
+            foreach ($solution_ids as $id) {
+                $investmentSolutions[] = array('investment_id' => $investment->id, 'solution_id' => $id, 'user_id' => $user->id);
+            }
             if (isset($investmentSolutions)) {
                 UserInvestmentSolution::insert($investmentSolutions);
             }

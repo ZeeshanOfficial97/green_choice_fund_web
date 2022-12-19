@@ -35,8 +35,8 @@ class SaveUserInvestmentRequest extends FormRequest
             'address' => 'required|string|max:1500',
             'dob' => 'required|date|before_or_equal:' . \Carbon\Carbon::now()->subYears(18)->format('Y-m-d'),
             'investment_amount' => 'required|numeric|max:25000',
-            'solution_ids' => 'required|array',
-            'solution_ids.*' => 'exists:solutions,id',
+            // 'solution_ids' => 'required|array',
+            // 'solution_ids.*' => 'exists:solutions,id',
             'account_id' => 'required',
             'access_token' => 'required'
 

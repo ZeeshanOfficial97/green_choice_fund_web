@@ -8,7 +8,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico"> -->
 
-  <title>Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template</title>
+  <title>Green Choice Fund</title>
 
   <!-- Splash Screen/Loader Styles -->
   <link rel="stylesheet" type="text/css" href="{{ asset(mix('css/loader.css')) }}" />

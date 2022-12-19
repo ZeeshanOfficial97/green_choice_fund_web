@@ -17,19 +17,36 @@ class UserInvestment extends Model
     protected $casts = ['status' => 'boolean'];
 
     public const ORDER_STATUS = array(
-        'New Order'
+        'Pending',
+        'Verified',
+        'In Process',
+        'Processed',
+        'Cancelled',
+
     );
     public const ORDER_BG_CLR = array(
-        '#FF0000'
+        '#000000',
+        '#FF0000',
+        '#FF0000',
+        '#FF0000',
+        '#FF0000',
     );
 
     public const ORDER_TEXT_CLR = array(
-        '#FFFFFF'
+        '#FFFFFF',
+        '#000000',
+        '#000000',
+        '#000000',
+        '#000000',
     );
 
 
     public const ORDER_STATUS_INDEX = [
-        'NewOrder' => 0
+        'Pending' => 0,
+        'Verified' => 1,
+        'In Process' => 2,
+        'Processed' => 3,
+        'Cancelled' => 4,
     ];
 
     public function userInvestmentSolution()

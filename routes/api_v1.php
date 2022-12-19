@@ -110,6 +110,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::prefix('investment')->group(function () {
         Route::post('/save', [InvestmentController::class, 'saveUserInvestment']);
+        Route::post('/save/stripe', [InvestmentController::class, 'saveUserInvestmentStripe']);
         Route::get('/user', [InvestmentController::class, 'getUserInvestments']);
         Route::get('/get', [InvestmentController::class, 'getUserInvestment']);
     });

@@ -22,4 +22,12 @@ class Category extends Model
     {
         return $this->hasMany(CategoriesMedia::class, 'category_id', 'id')->withTrashed();
     }
+
+    public function solutions()
+    {
+        return $this->hasMany(Solution::class, 'category_id', 'id')->withTrashed();
+    }
+    public function getSolutionsCountAttribute() {
+        return $this->solutions->count();
+    }
 }

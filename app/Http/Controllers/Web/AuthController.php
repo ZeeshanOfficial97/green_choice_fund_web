@@ -19,7 +19,6 @@ class AuthController extends ApiController
             'password' => 'Sorry, we do not recognize these credentials'
         ];
 
-
         $credentials = $request->only(['email', 'password']);
         if (!$token = auth('api')->attempt($credentials)) {
             return $this->errorResponse($invalidCredentials['password'], $invalidCredentials, 610);

@@ -34,7 +34,7 @@ class AuthController extends ApiController
 {
     use StripeClient;
 
-    public function login(AppUserLoginRequest $request)
+    public function login(Request $request)
     {
         $invalidCredentials = [
             'password' => 'Sorry, we do not recognize these credentials'
@@ -92,11 +92,11 @@ class AuthController extends ApiController
         return $this->successResponse("User logged in successfully", $data);
     }
 
-    public function signup(AppUserSignupRequest $request)
+    public function signup(Request $request)
     {
         $stripeUser = null;
 
-        try {
+        // try {
             if (!in_array($request->push_platform_id, [1, 2])) {
                 $errors = [
                     'push_platform_id' => ['Invalid platform id']
@@ -159,20 +159,20 @@ class AuthController extends ApiController
 
 
             return $this->successResponse("User logged in successfully", $data);
-        } catch (\Throwable $th) {
-            if (isset($stripeUser->id)) {
-                try {
-                    $stripe = $this->getStripeClient();
-                    $stripe->customers->delete(
-                        $stripeUser->id,
-                        []
-                    );
-                } catch (\Throwable $th) {
-                    return $this->exceptionResponse($th);
-                }
-            }
-            return $this->exceptionResponse($th);
-        }
+        // } catch (\Throwable $th) {
+        //     if (isset($stripeUser->id)) {
+        //         try {
+        //             $stripe = $this->getStripeClient();
+        //             $stripe->customers->delete(
+        //                 $stripeUser->id,
+        //                 []
+        //             );
+        //         } catch (\Throwable $th) {
+        //             return $this->exceptionResponse($th);
+        //         }
+        //     }
+        //     return $this->exceptionResponse($th);
+        // }
     }
 
     public function userDetail(User $user)
@@ -214,7 +214,7 @@ class AuthController extends ApiController
         }
     }
 
-    public function updatePassword(AppUserUpdatePasswordRequest $request)
+    public function updatePassword(Request $request)
     {
         try {
             $user = Auth::user();
@@ -231,7 +231,7 @@ class AuthController extends ApiController
         }
     }
 
-    public function updateUser(AppUserUpdateRequest $request)
+    public function updateUser(Request $request)
     {
         try {
 
@@ -318,7 +318,7 @@ class AuthController extends ApiController
         }
     }
 
-    public function socialLogin(AppUserSocialLoginRequest $request)
+    public function socialLogin(Request $request)
     {
         // try {
 

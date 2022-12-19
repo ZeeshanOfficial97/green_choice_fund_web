@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             'status' => true,
             'created_at' => \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now()
-        ])->assignRole('super_admin');
+        ]);
 
         $super_admin = Role::findByName('super_admin', 'api');
         if ($super_admin) {

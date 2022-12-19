@@ -36,7 +36,7 @@ class InvestmentController extends ApiController
 
     public function saveUserInvestment(SaveUserInvestmentRequest $request)
     {
-        try {
+        // try {
             $account_id = $request->get('account_id');
             $access_token = $request->get('access_token');
             $investment_amount = $request->get('investment_amount');
@@ -99,6 +99,37 @@ class InvestmentController extends ApiController
             DB::commit();
             $result = new InvestmentResource($investment);
             return $this->successResponse("Investment funds has been transferred successfully", $result, 'Investment saved');
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     if (isset($stripeCharge)) {
+        //         if (($stripeCharge->id != null && $stripeCharge->captured)) {
+        //             $stripe = $this->getStripeClient();
+        //             $stripeRefund = $stripe->refunds->create([
+        //                 'charge' => $stripeCharge->id
+        //             ]);
+        //             $this->investmentService->saveStripeRefund($stripeCharge, $stripeRefund, $user);
+        //         }
+        //     }
+        //     return $this->exceptionResponse($th);
+        // }
+    }
+
+    public function saveUserInvestmentStripe(Request $request)
+    {
+        try {
+            
+            $stripeCharge= null;
+            $user = Auth::user();
+
+            DB::beginTransaction();
+            $investment = $this->investmentService->saveUserInvestment($request);
+
+            
+            $investment = $this->investmentService->investmentInstanceSave($investment);
+            Cart::where('user_id', $user->id)->forceDelete();
+            DB::commit();
+            $result = new InvestmentResource($investment);
+            return $this->successResponse("Investment funds has been transferred successfully", $result, 'Investment saved');
         } catch (\Throwable $th) {
             DB::rollBack();
             if (isset($stripeCharge)) {
@@ -127,7 +158,7 @@ class InvestmentController extends ApiController
 
     public function getUserInvestment(Request $request)
     {
-        try {
+        // try {
             if ($data = $this->investmentService->getUserInvestment($request, Auth::user()->id, true)) {
                 $result = new InvestmentResource($data);
                 return $this->successResponse("User investments list", $result);
@@ -136,8 +167,8 @@ class InvestmentController extends ApiController
                     'investment' => 'Record not found',
                 ], 404, statusCode: 404);
             }
-        } catch (\Throwable $th) {
-            return $this->exceptionResponse($th);
-        }
+        // } catch (\Throwable $th) {
+        //     return $this->exceptionResponse($th);
+        // }
     }
 }

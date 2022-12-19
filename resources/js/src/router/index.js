@@ -21,16 +21,17 @@ const router = new VueRouter({
   scrollBehavior() {
     return { x: 0, y: 0 }
   },
+  // 'apps-categories-list'
   routes: [
-    { path: '/', redirect: { name: 'dashboard-ecommerce' } },
+  { path: '/', redirect: { name: 'apps-categories-list' } },
     ...greenChoiceFund,
-    ...apps,
-    ...dashboard,
+    // ...apps,
+    // ...dashboard,
     ...pages,
-    ...chartsMaps,
-    ...formsTable,
-    ...uiElements,
-    ...others,
+    // ...chartsMaps,
+    // ...formsTable,
+    // ...uiElements,
+    // ...others,
     {
       path: '*',
       redirect: 'error-404',
@@ -39,20 +40,23 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  
   const isLoggedIn = isUserLoggedIn()
 
   if (!canNavigate(to)) {
+    
     // Redirect to login if not logged in
     if (!isLoggedIn) return next({ name: 'auth-login' })
-
     // If logged in => not authorized
     return next({ name: 'misc-not-authorized' })
   }
 
+  
   // Redirect if logged in
   if (to.meta.redirectIfLoggedIn && isLoggedIn) {
+    
     const userData = getUserData()
-    next(getHomeRouteForLoggedInUser(userData ? userData.role : null))
+    next(getHomeRouteForLoggedInUser(userData ? userData?.roles[0]?.name || '' : null))
   }
 
   return next()

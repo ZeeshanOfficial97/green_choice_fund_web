@@ -23,8 +23,8 @@ class SolutionService extends BaseService
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->sub_category_id) {
-            $query = $query->where('sub_category_id', $request->sub_category_id);
+        if ($request->category_id) {
+            $query = $query->where('category_id', $request->category_id);
         }
 
         if ($api) {

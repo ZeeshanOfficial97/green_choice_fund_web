@@ -67,8 +67,10 @@ export default function useUsersList() {
         status: statusFilter.value,
       })
       .then(response => {
-        const { users, total } = response.data
-
+        
+        // const { users, total } = response.data
+        const users = response.data.data.list;
+        const total = response.data.data.pagination.total;
         callback(users)
         totalUsers.value = total
       })
@@ -107,9 +109,9 @@ export default function useUsersList() {
   }
 
   const resolveUserStatusVariant = status => {
-    if (status === 'pending') return 'warning'
     if (status === 'active') return 'success'
-    if (status === 'inactive') return 'secondary'
+    if (status === 'inactive') return 'danger'
+    if (status === 'pending') return 'warning'
     return 'primary'
   }
 

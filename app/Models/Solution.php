@@ -21,7 +21,7 @@ class Solution extends Model
 
     public function solutionMedia()
     {
-        return $this->hasMany(SolutionsMedia::class, 'solution_id', 'id')->withTrashed();
+        return $this->hasMany(SolutionsMedia::class, 'solution_id', 'id');
     }
 
     public function getAddedToCartAttribute()
@@ -46,5 +46,9 @@ class Solution extends Model
     public function solutionWishlist()
     {
         return $this->hasMany(Wishlist::class, 'solution_id', 'id');
+    }
+
+    public function category() {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
