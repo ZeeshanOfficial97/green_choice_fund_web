@@ -61,5 +61,46 @@ export default [
         route: { name: 'apps-notifications-send' },
       },
     ],
-  }
+  },
+  {
+    title: 'Infographic',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'List',
+        route: { name: 'apps-infographics-list' },
+      },
+    ],
+  },
+  {
+    title: 'Eula',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'List',
+        route: { name: 'apps-eulas-list' },
+      },
+    ],
+  },
+  {
+    title: 'Portfolio',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'List',
+        route: { name: 'apps-portfolios-list' },
+      },
+    ],
+  },
+  {
+    title: 'FAQ',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'List',
+        route: 'apps-faqs-list',
+      },
+    ],
+  },
+
 ]

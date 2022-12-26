@@ -630,13 +630,13 @@ export default {
       });
 
     const onSubmit = () => {
-      debugger;
+
       showLoaderBtn.value = true;
       store
         .dispatch("app-user-investment/updateInvestmentStatus", investmentData.value)
         .then((response) => {
           showLoaderBtn.value = false;
-          debugger;
+
           toast({
             component: ToastificationContent,
             props: {

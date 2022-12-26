@@ -80,6 +80,59 @@ export default [
     path: '/apps/notifications/send',
     name: 'apps-notifications-send',
     component: () => import('@/views/apps/notification/notifications-send/NotificationSend.vue'),
-  }
+  },
+
+  // *===============================================---*
+  // *--------- Infographic ---- ---------------------------------------*
+  // *===============================================---*
+
+  {
+    path: '/apps/infographics/list',
+    name: 'apps-infographics-list',
+    component: () => import('@/views/apps/infographic/infographics-list/InfographicList.vue'),
+  },
+
+  // *===============================================---*
+  // *--------- Eula ---- ---------------------------------------*
+  // *===============================================---*
+
+  {
+    path: '/apps/eulas/list',
+    name: 'apps-eulas-list',
+    component: () => import('@/views/apps/eula/eulas-list/EulaList.vue'),
+  },
+
+  // *===============================================---*
+  // *--------- Portfolio ---- ---------------------------------------*
+  // *===============================================---*
+
+  {
+    path: '/apps/portfolios/list',
+    name: 'apps-portfolios-list',
+    component: () => import('@/views/apps/portfolio/portfolios-list/PortfolioList.vue'),
+  },
+
+  // *===============================================---*
+  // *--------- Faq ---- ---------------------------------------*
+  // *===============================================---*
+  {
+    path: '/apps/faqs/list/view',
+    name: 'apps-faqs-list-view',
+    component: () => import('@/views/apps/faq/faqs-list/FaqListView.vue'),
+    meta: {
+      layout: 'full',
+    }
+  },
+  {
+    path: '/apps/faqs/list',
+    name: 'apps-faqs-list',
+    component: () => import('@/views/apps/faq/faqs-list/FaqList.vue'),
+  },
+  {
+    path: '/apps/faqs/edit/:id',
+    name: 'apps-faqs-edit',
+    component: () => import('@/views/apps/faq/faqs-edit/FaqEdit.vue'),
+  },
+
 
 ]

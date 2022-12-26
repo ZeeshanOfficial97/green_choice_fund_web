@@ -397,7 +397,7 @@ export default {
       });
 
     const onSubmit = () => {
-      debugger;
+
       showLoaderBtn.value = true;
       let formData = new FormData();
       formData.append("id", solutionData.value.id);
@@ -411,7 +411,6 @@ export default {
         formData.append("media[]", image);
       });
       (solutionData.value.solution_media || []).forEach((obj) => {
-        debugger;
         formData.append("solution_media_id[]", +obj.id);
       });
 
@@ -440,7 +439,7 @@ export default {
         })
         .catch((err) => {
           showLoaderBtn.value = false;
-          this.$toast({
+          toast({
             component: ToastificationContent,
             props: {
               title: err?.message ? err.message : err?.response?.data?.message,
@@ -464,7 +463,6 @@ export default {
     };
 
     const deleteImage = (index) => {
-      debugger;
       solutionData.value.solution_media.splice(index, 1);
     };
 

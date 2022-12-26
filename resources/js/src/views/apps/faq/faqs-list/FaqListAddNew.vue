@@ -1,7 +1,7 @@
 <template>
   <b-sidebar
-    id="add-new-category-sidebar"
-    :visible="isAddNewCategorySidebarActive"
+    id="add-new-faq-sidebar"
+    :visible="isAddNewFaqSidebarActive"
     bg-variant="white"
     sidebar-class="sidebar-lg"
     shadow
@@ -9,7 +9,7 @@
     no-header
     right
     @hidden="resetForm"
-    @change="(val) => $emit('update:is-add-new-category-sidebar-active', val)"
+    @change="(val) => $emit('update:is-add-new-faq-sidebar-active', val)"
   >
     <template #default="{ hide }">
       <!-- Header -->
@@ -23,7 +23,7 @@
           py-1
         "
       >
-        <h5 class="mb-0">Add New Category</h5>
+        <h5 class="mb-0">Add New Faq</h5>
 
         <feather-icon
           class="ml-1 cursor-pointer"
@@ -37,27 +37,29 @@
       <validation-observer #default="{ handleSubmit }" ref="refFormObserver">
         <!-- Form -->
         <b-form
+          enctype="multipart/form-data"
           class="p-2"
           @submit.prevent="handleSubmit(onSubmit)"
           @reset.prevent="resetForm"
         >
-          <!-- Full Name -->
+          <!-- Question -->
           <validation-provider
             #default="validationContext"
-            name="name"
+            name="question"
             rules="required"
           >
-            <b-form-group label-for="category-name">
+            <b-form-group label-for="question">
               <template v-slot:label>
-                Category Name <span class="text-danger">*</span>
+                Question <span class="text-danger">*</span>
               </template>
-              <b-form-input
-                id="category-name"
-                v-model="categoryData.name"
-                autofocus
+              <b-form-textarea
+                id="question"
+                v-model="faqData.question"
                 :state="getValidationState(validationContext)"
                 trim
-                placeholder="Category Name"
+                rows="3"
+                max-rows="8"
+                class="mb-1 mb-xl-0"
               />
 
               <b-form-invalid-feedback>
@@ -66,42 +68,25 @@
             </b-form-group>
           </validation-provider>
 
-          <!-- Media -->
+          <!-- Answer -->
           <validation-provider
             #default="validationContext"
-            name="media"
+            name="answer"
             rules="required"
           >
-            <b-form-group label-for="category-media">
+            <b-form-group label-for="answer">
               <template v-slot:label>
-                File <span class="text-danger">*</span>
+                Answer <span class="text-danger">*</span>
               </template>
-
-              <b-form-file
-                id="category-media"
-                accept=".mp4, .jpg, .png, .gif"
-                v-model="categoryData.media"
-                autofocus
+              <b-form-textarea
+                id="answer"
+                v-model="faqData.answer"
                 :state="getValidationState(validationContext)"
-                v-on:change="onFileChange"
+                trim
+                rows="3"
+                max-rows="8"
+                class="mb-1 mb-xl-0"
               />
-
-              <b-form-invalid-feedback>
-                {{ validationContext.errors[0] }}
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </validation-provider>
-
-          <!-- Published -->
-          <validation-provider
-            #default="validationContext"
-            name="published"
-            rules=""
-          >
-            <b-form-group label="" label-for="">
-              <b-form-checkbox v-model="categoryData.published">
-                Published
-              </b-form-checkbox>
 
               <b-form-invalid-feedback>
                 {{ validationContext.errors[0] }}
@@ -116,7 +101,7 @@
             rules=""
           >
             <b-form-group label="" label-for="">
-              <b-form-checkbox v-model="categoryData.status">
+              <b-form-checkbox v-model="faqData.status">
                 Status
               </b-form-checkbox>
 
@@ -174,6 +159,7 @@ import {
   BFormInput,
   BFormInvalidFeedback,
   BButton,
+  BFormTextarea,
   BFormFile,
   BSpinner,
   BFormCheckbox,
@@ -183,11 +169,11 @@ import { ref } from "@vue/composition-api";
 import { required, alphaNum } from "@validations";
 import formValidation from "@core/comp-functions/forms/form-validation";
 import Ripple from "vue-ripple-directive";
+import vSelect from "vue-select";
 import store from "@/store";
 // Notification
 import { useToast } from "vue-toastification/composition";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import axios from "@axios";
 
 export default {
   components: {
@@ -197,25 +183,30 @@ export default {
     BFormInput,
     BFormInvalidFeedback,
     BButton,
+    BFormTextarea,
     BFormFile,
     BSpinner,
     BFormCheckbox,
+    vSelect,
     // Form Validation
     ValidationProvider,
     ValidationObserver,
-    ToastificationContent,
   },
   directives: {
     Ripple,
   },
   model: {
-    prop: "isAddNewCategorySidebarActive",
-    event: "update:is-add-new-category-sidebar-active",
+    prop: "isAddNewFaqSidebarActive",
+    event: "update:is-add-new-faq-sidebar-active",
   },
   props: {
-    isAddNewCategorySidebarActive: {
+    isAddNewFaqSidebarActive: {
       type: Boolean,
       required: true,
+    },
+    categoryOptions: {
+      type: Array,
+      required: false,
     },
   },
   data() {
@@ -226,34 +217,28 @@ export default {
   },
   setup(props, { emit }) {
     const toast = useToast();
-    const blankCategoryData = {
-      name: "",
-      published: false,
+
+    const blankFaqData = {
+      question: "",
+      answer: "",
       status: false,
-      media: [],
     };
 
-    const categoryData = ref(JSON.parse(JSON.stringify(blankCategoryData)));
-    const resetcategoryData = () => {
-      categoryData.value = JSON.parse(JSON.stringify(blankCategoryData));
+    const faqData = ref(JSON.parse(JSON.stringify(blankFaqData)));
+    const resetfaqData = () => {
+      faqData.value = JSON.parse(JSON.stringify(blankFaqData));
     };
 
     const showLoaderBtn = ref(false);
     const onSubmit = () => {
       showLoaderBtn.value = true;
       let formData = new FormData();
-      formData.append("name", categoryData.value.name);
-      formData.append("published", categoryData.value.published);
-      formData.append("status", categoryData.value.status);
-      formData.append(
-        "media",
-        categoryData.value.media instanceof File
-          ? categoryData.value.media
-          : null
-      );
+      formData.append("question", faqData.value.question);
+      formData.append("answer", faqData.value.answer);
+      formData.append("status", faqData.value.status);
 
       store
-        .dispatch("app-category/addCategory", formData)
+        .dispatch("app-faq/addFaq", formData)
         .then((response) => {
           showLoaderBtn.value = false;
 
@@ -273,7 +258,7 @@ export default {
 
           if (response?.data?.code === 200) {
             emit("refetch-data");
-            emit("update:is-add-new-category-sidebar-active", false);
+            emit("update:is-add-new-faq-sidebar-active", false);
           }
         })
         .catch((err) => {
@@ -289,31 +274,27 @@ export default {
         });
     };
 
-    const onFileChange = (e) => {
-      categoryData.value.media = e.target.files;
-    };
-
     const { refFormObserver, getValidationState, resetForm } =
-      formValidation(resetcategoryData);
+      formValidation(resetfaqData);
 
     return {
       showLoaderBtn,
-      categoryData,
+      faqData,
       onSubmit,
-      onFileChange,
       refFormObserver,
       getValidationState,
       resetForm,
       toast,
     };
   },
+  methods: {},
 };
 </script>
 
 <style lang="scss">
 @import "~@resources/scss/vue/libs/vue-select.scss";
 
-#add-new-category-sidebar {
+#add-new-faq-sidebar {
   .vs__dropdown-menu {
     max-height: 200px !important;
   }

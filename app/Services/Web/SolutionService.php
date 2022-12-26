@@ -102,6 +102,8 @@ class SolutionService extends BaseService
         if (isset($data['image'])) {
             if (isset($data['solution_media_id']) && is_array($data['solution_media_id'])) {
                 SolutionsMedia::whereNotIn('id', $data['solution_media_id'])->delete();
+            } else {
+                Solution::where(['category_id' => $data['category_id']])->delete();
             }
             if (is_array($data['image'])) {
                 foreach ($data['image'] as $image) {

@@ -1,7 +1,7 @@
 <template>
   <b-sidebar
-    id="add-new-category-sidebar"
-    :visible="isAddNewCategorySidebarActive"
+    id="add-new-eula-sidebar"
+    :visible="isAddNewEulaSidebarActive"
     bg-variant="white"
     sidebar-class="sidebar-lg"
     shadow
@@ -9,7 +9,7 @@
     no-header
     right
     @hidden="resetForm"
-    @change="(val) => $emit('update:is-add-new-category-sidebar-active', val)"
+    @change="(val) => $emit('update:is-add-new-eula-sidebar-active', val)"
   >
     <template #default="{ hide }">
       <!-- Header -->
@@ -23,7 +23,7 @@
           py-1
         "
       >
-        <h5 class="mb-0">Add New Category</h5>
+        <h5 class="mb-0">Add New Eula</h5>
 
         <feather-icon
           class="ml-1 cursor-pointer"
@@ -47,17 +47,17 @@
             name="name"
             rules="required"
           >
-            <b-form-group label-for="category-name">
+            <b-form-group label-for="eula-name">
               <template v-slot:label>
-                Category Name <span class="text-danger">*</span>
+                Name <span class="text-danger">*</span>
               </template>
               <b-form-input
-                id="category-name"
-                v-model="categoryData.name"
+                id="eula-name"
+                v-model="eulaData.name"
                 autofocus
                 :state="getValidationState(validationContext)"
                 trim
-                placeholder="Category Name"
+                placeholder="Name"
               />
 
               <b-form-invalid-feedback>
@@ -72,53 +72,19 @@
             name="media"
             rules="required"
           >
-            <b-form-group label-for="category-media">
+            <b-form-group label-for="eula-media">
               <template v-slot:label>
                 File <span class="text-danger">*</span>
               </template>
 
               <b-form-file
-                id="category-media"
-                accept=".mp4, .jpg, .png, .gif"
-                v-model="categoryData.media"
+                id="eula-media"
+                accept=".pdf"
+                v-model="eulaData.media"
                 autofocus
                 :state="getValidationState(validationContext)"
                 v-on:change="onFileChange"
               />
-
-              <b-form-invalid-feedback>
-                {{ validationContext.errors[0] }}
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </validation-provider>
-
-          <!-- Published -->
-          <validation-provider
-            #default="validationContext"
-            name="published"
-            rules=""
-          >
-            <b-form-group label="" label-for="">
-              <b-form-checkbox v-model="categoryData.published">
-                Published
-              </b-form-checkbox>
-
-              <b-form-invalid-feedback>
-                {{ validationContext.errors[0] }}
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </validation-provider>
-
-          <!-- Status -->
-          <validation-provider
-            #default="validationContext"
-            name="status"
-            rules=""
-          >
-            <b-form-group label="" label-for="">
-              <b-form-checkbox v-model="categoryData.status">
-                Status
-              </b-form-checkbox>
 
               <b-form-invalid-feedback>
                 {{ validationContext.errors[0] }}
@@ -209,11 +175,11 @@ export default {
     Ripple,
   },
   model: {
-    prop: "isAddNewCategorySidebarActive",
-    event: "update:is-add-new-category-sidebar-active",
+    prop: "isAddNewEulaSidebarActive",
+    event: "update:is-add-new-eula-sidebar-active",
   },
   props: {
-    isAddNewCategorySidebarActive: {
+    isAddNewEulaSidebarActive: {
       type: Boolean,
       required: true,
     },
@@ -226,34 +192,30 @@ export default {
   },
   setup(props, { emit }) {
     const toast = useToast();
-    const blankCategoryData = {
+    const blankEulaData = {
       name: "",
-      published: false,
-      status: false,
       media: [],
     };
 
-    const categoryData = ref(JSON.parse(JSON.stringify(blankCategoryData)));
-    const resetcategoryData = () => {
-      categoryData.value = JSON.parse(JSON.stringify(blankCategoryData));
+    const eulaData = ref(JSON.parse(JSON.stringify(blankEulaData)));
+    const reseteulaData = () => {
+      eulaData.value = JSON.parse(JSON.stringify(blankEulaData));
     };
 
     const showLoaderBtn = ref(false);
     const onSubmit = () => {
       showLoaderBtn.value = true;
       let formData = new FormData();
-      formData.append("name", categoryData.value.name);
-      formData.append("published", categoryData.value.published);
-      formData.append("status", categoryData.value.status);
+      formData.append("name", eulaData.value.name);
       formData.append(
         "media",
-        categoryData.value.media instanceof File
-          ? categoryData.value.media
+        eulaData.value.media instanceof File
+          ? eulaData.value.media
           : null
       );
 
       store
-        .dispatch("app-category/addCategory", formData)
+        .dispatch("app-eula/addEula", formData)
         .then((response) => {
           showLoaderBtn.value = false;
 
@@ -273,7 +235,7 @@ export default {
 
           if (response?.data?.code === 200) {
             emit("refetch-data");
-            emit("update:is-add-new-category-sidebar-active", false);
+            emit("update:is-add-new-eula-sidebar-active", false);
           }
         })
         .catch((err) => {
@@ -290,15 +252,15 @@ export default {
     };
 
     const onFileChange = (e) => {
-      categoryData.value.media = e.target.files;
+      eulaData.value.media = e.target.files;
     };
 
     const { refFormObserver, getValidationState, resetForm } =
-      formValidation(resetcategoryData);
+      formValidation(reseteulaData);
 
     return {
       showLoaderBtn,
-      categoryData,
+      eulaData,
       onSubmit,
       onFileChange,
       refFormObserver,
@@ -313,7 +275,7 @@ export default {
 <style lang="scss">
 @import "~@resources/scss/vue/libs/vue-select.scss";
 
-#add-new-category-sidebar {
+#add-new-eula-sidebar {
   .vs__dropdown-menu {
     max-height: 200px !important;
   }

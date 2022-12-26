@@ -379,7 +379,7 @@ export default {
         })
         .catch((err) => {
           showLoaderBtn.value = false;
-          this.$toast({
+          toast({
             component: ToastificationContent,
             props: {
               title: err?.message ? err.message : err?.response?.data?.message,

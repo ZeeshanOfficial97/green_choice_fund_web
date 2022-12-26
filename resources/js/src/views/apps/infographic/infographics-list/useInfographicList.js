@@ -6,95 +6,66 @@ import { title } from '@core/utils/filter'
 import { useToast } from 'vue-toastification/composition'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
-export default function useInquiryList() {
+export default function useInfographicList() {
   // Use toast
   const toast = useToast()
 
-  const refInquiryListTable = ref(null)
+  const refInfographicListTable = ref(null)
 
   // Table Handlers
   const tableColumns = [
     { key: 'name', sortable: true },
-    { key: 'email', sortable: true },
-    { key: 'phone', sortable: false },
-    {
-      key: 'contact_reason',
-      label: 'Contact Reason',
-      formatter: title,
-      sortable: false,
-    },
-    { key: 'date', sortable: false },
+    { key: 'file_url', sortable: false, label: 'Image' },
     { key: 'status', sortable: false },
-    { key: 'actions' },
+    // { key: 'actions' },
   ]
-  const totalInquiries = ref(0)
+  const totalInfographics = ref(0)
   const currentPage = ref(1)
   const perPage = ref(10)
   const perPageOptions = [10, 25, 50, 100]
   const searchQuery = ref('')
   const sortBy = ref('id')
   const isSortDirDesc = ref(true)
-  const reasonFilter = ref(null)
   const statusFilter = ref(null)
 
   const dataMeta = computed(() => {
-    const localItemsCount = refInquiryListTable.value ? refInquiryListTable.value.localItems.length : 0
+    const localItemsCount = refInfographicListTable.value ? refInfographicListTable.value.localItems.length : 0
     return {
       from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
       to: perPage.value * (currentPage.value - 1) + localItemsCount,
-      of: totalInquiries.value,
+      of: totalInfographics.value,
     }
   })
 
   const refetchData = () => {
-    refInquiryListTable.value.refresh()
+    refInfographicListTable.value.refresh()
   }
 
-  watch([currentPage, perPage, searchQuery, reasonFilter, statusFilter], () => {
+  watch([currentPage, perPage, searchQuery, statusFilter], () => {
     refetchData()
   })
 
-  const fetchInquiries = (ctx, callback) => {
-    
+  const fetchInfographics = (ctx, callback) => {
     store
-      .dispatch('app-user-inquiry/fetchInquiries', {
+      .dispatch('app-infographic/fetchInfographics', {
         q: searchQuery.value,
         length: perPage.value,
         page: currentPage.value,
         sortBy: sortBy.value,
         dir: isSortDirDesc.value ? 'desc' : 'asc',
-        reason: reasonFilter.value,
         status: statusFilter.value,
       })
       .then(response => {
-        
-
         const inquiries = response.data.data.list;
         const total = response.data.data?.pagination?.total || 0;
         callback(inquiries)
-        totalInquiries.value = total
+        totalInfographics.value = total
       })
-      .catch((err,) => {
+      .catch(() => {
         toast({
           component: ToastificationContent,
           props: {
-            title: 'Error fetching inquiries list',
-            icon: 'AlertTriangleIcon',
-            variant: 'danger',
-          },
-        })
-      })
-  }
-
-  const fetchInquiryReasons = () => {
-    store
-      .dispatch('app-user-inquiry/fetchInquiryReasons')
-      .then(response => {response.data.data;})
-      .catch((err) => {
-        toast({
-          component: ToastificationContent,
-          props: {
-            title: 'Error fetching inquiry reasons',
+            title: 'Error fetching infographics list',
             icon: 'AlertTriangleIcon',
             variant: 'danger',
           },
@@ -106,31 +77,28 @@ export default function useInquiryList() {
   // *--------- UI ---------------------------------------*
   // *===============================================---*
 
-
-  const resolveUserStatusVariant = status => {
+  const resolveInfographicStatusVariant = status => {
     if (status === 'active') return 'success'
     if (status === 'inactive') return 'danger'
     return 'primary'
   }
 
   return {
-    fetchInquiries,
-    fetchInquiryReasons,
+    fetchInfographics,
     tableColumns,
-    totalInquiries,
-    currentPage,
     perPage,
-    perPageOptions,
+    currentPage,
+    totalInfographics,
     dataMeta,
+    perPageOptions,
     searchQuery,
     sortBy,
     isSortDirDesc,
-    refInquiryListTable,
-    resolveUserStatusVariant,
+    refInfographicListTable,
+    resolveInfographicStatusVariant,
     refetchData,
 
     // Extra Filters
-    reasonFilter,
-    statusFilter
+    statusFilter,
   }
 }

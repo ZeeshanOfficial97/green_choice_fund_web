@@ -32,6 +32,7 @@ class InfoUrlSeeder extends Seeder
             'url_key' => 'faq',
             'url_version' => '1.0',
             'url_web' => 'https://greenchoicefund.com/',
+            // 'url_web_url' => 'https://admin.greenchoicefund.com/apps/faqs/list/view'
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 

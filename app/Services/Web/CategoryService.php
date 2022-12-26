@@ -63,7 +63,7 @@ class CategoryService extends BaseService
         $categoryData = [
             'name' => $data['name'],
             'published' => isset($data['published']) && $data['published'] == 'true' ? true : false,
-            'status' => isset($data['status']) && $data['published'] == 'true' ? true : false,
+            'status' => isset($data['status']) && $data['status'] == 'true' ? true : false,
         ];
 
         $category = Category::create($categoryData);
