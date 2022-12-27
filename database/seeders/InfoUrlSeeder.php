@@ -31,8 +31,8 @@ class InfoUrlSeeder extends Seeder
         InfoUrl::updateOrCreate(['url_key' => 'faq'], [
             'url_key' => 'faq',
             'url_version' => '1.0',
-            'url_web' => 'https://greenchoicefund.com/',
-            // 'url_web_url' => 'https://admin.greenchoicefund.com/apps/faqs/list/view'
+            // 'url_web' => 'https://greenchoicefund.com/',
+            'url_web' => 'https://admin.greenchoicefund.com/apps/faqs/list/view',
             'updated_date' => \Carbon\Carbon::now(),
         ]);
 
