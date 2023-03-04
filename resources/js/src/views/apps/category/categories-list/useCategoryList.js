@@ -47,6 +47,10 @@ export default function useCategoryList() {
   })
 
   const fetchCategories = (ctx, callback) => {
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-category/fetchCategories', {
         q: searchQuery.value,
@@ -61,6 +65,10 @@ export default function useCategoryList() {
         const total = response.data.data?.pagination?.total || 0;
         callback(inquiries)
         totalCategories.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch(() => {
         toast({
@@ -71,6 +79,10 @@ export default function useCategoryList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

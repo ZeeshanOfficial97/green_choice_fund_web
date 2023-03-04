@@ -11,7 +11,7 @@ class UserInvestment extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'investment_num', 'name', 'email', 'country_code', 'contact_no', 'address', 'dob', 'invested_amount', 'user_id', 'stripe_charge_id',
-        'investment_status', 'status'
+        'investment_status', 'status','channel'
     ];
     protected $hidden = ['updated_at', 'deleted_at'];
     protected $casts = ['status' => 'boolean'];

@@ -138,7 +138,7 @@
           >
             <b-form-group label-for="solution-media">
               <template v-slot:label>
-                File <span class="text-danger">*</span>
+                Meida (Maximum selected files are 5) <span class="text-danger">*</span>
               </template>
               <b-form-file
                 id="solution-media"
@@ -208,7 +208,7 @@
           >
             <b-form-group label="" label-for="">
               <b-form-checkbox v-model="solutionData.status">
-                Status
+                Active
               </b-form-checkbox>
 
               <b-form-invalid-feedback>

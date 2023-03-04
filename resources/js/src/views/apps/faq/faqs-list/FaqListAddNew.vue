@@ -102,7 +102,7 @@
           >
             <b-form-group label="" label-for="">
               <b-form-checkbox v-model="faqData.status">
-                Status
+                Active
               </b-form-checkbox>
 
               <b-form-invalid-feedback>

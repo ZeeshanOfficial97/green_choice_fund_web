@@ -18,6 +18,9 @@ return [
     'stripe_secret' => env('STRIPE_SECRET'),
     'stripe_payment_url' => env('STRIPE_PAYMENT_URL'),
 
+    'paypal_payment_url' => env('PAYPAL_PAYMENT_URL'),
+
+
     'plaid_client_id' => env('PLAID_CLIENT_ID'),
     'plaid_secret' => env('PLAID_SECRET'),
     'plaid_env' => env('PLAID_ENV'),

@@ -15,7 +15,7 @@ export default function useSolutionList() {
   // Table Handlers
   const tableColumns = [
     { key: 'name', sortable: true },
-    { key: 'category_name',label: 'Category', sortable: false },
+    { key: 'category_name', label: 'Category', sortable: false },
     { key: 'description', sortable: false },
     { key: 'published', sortable: false },
     { key: 'status', sortable: false },
@@ -50,6 +50,10 @@ export default function useSolutionList() {
   })
 
   const fetchSolutions = (ctx, callback) => {
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-solution/fetchSolutions', {
         q: searchQuery.value,
@@ -58,7 +62,7 @@ export default function useSolutionList() {
         sortBy: sortBy.value,
         dir: isSortDirDesc.value ? 'desc' : 'asc',
         category: categoryFilter.value,
-        publish:publishFilter.value,
+        publish: publishFilter.value,
         status: statusFilter.value,
       })
       .then(response => {
@@ -66,6 +70,10 @@ export default function useSolutionList() {
         const total = response.data.data?.pagination?.total || 0;
         callback(solutions)
         totalSolutions.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch(() => {
         toast({
@@ -76,6 +84,10 @@ export default function useSolutionList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

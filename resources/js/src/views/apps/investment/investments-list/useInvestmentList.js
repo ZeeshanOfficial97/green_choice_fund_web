@@ -52,6 +52,10 @@ export default function useUsersList() {
   })
 
   const fetchInvestments = (ctx, callback) => {
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-user-investment/fetchInvestments', {
         q: searchQuery.value,
@@ -62,12 +66,16 @@ export default function useUsersList() {
         status: statusFilter.value,
       })
       .then(response => {
-        
+
         // const { users, total } = response.data
         const investments = response.data.data.list;
         const total = response.data.data.pagination.total;
         callback(investments)
         totalInvestments.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch(() => {
         toast({
@@ -78,6 +86,10 @@ export default function useUsersList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

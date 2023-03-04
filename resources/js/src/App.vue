@@ -23,7 +23,6 @@ import { watch } from '@vue/composition-api'
 import useAppConfig from '@core/app-config/useAppConfig'
 
 import { useWindowSize, useCssVar } from '@vueuse/core'
-import BuyNow from '@/components/BuyNow.vue'
 
 import store from '@/store'
 
@@ -40,7 +39,6 @@ export default {
     LayoutFull,
 
     ScrollToTop,
-    BuyNow,
   },
   // ! We can move this computed: layout & contentLayoutType once we get to use Vue 3
   // Currently, router.currentRoute is not reactive and doesn't trigger any change

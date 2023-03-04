@@ -94,7 +94,6 @@
                   </b-form-group>
                 </b-col>
 
-
                 <!-- status -->
                 <b-col cols="12" md="4" class="mb-md-0 mb-2">
                   <b-form-group label="Status" label-for="status">
@@ -105,8 +104,6 @@
                     />
                   </b-form-group>
                 </b-col>
-
-                
               </b-row>
             </b-card-body>
           </b-card>
@@ -162,15 +159,26 @@ export default {
         store.unregisterModule(USER_APP_STORE_MODULE_NAME);
     });
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch("app-user/fetchUser", { id: router.currentRoute.params.id })
       .then((response) => {
-        
         userData.value = response.data.data;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         if (error.response.status === 404) {
           userData.value = undefined;
+        }
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
         }
       });
 

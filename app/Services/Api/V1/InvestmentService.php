@@ -100,7 +100,7 @@ class InvestmentService extends BaseService
         $investment_amount = $request->get('investment_amount');
         $solution_ids = $request->get('solution_ids');
         $solution_ids =  Cart::where('user_id', $user->id)->pluck('solution_id')->toArray();
-
+        $channel = $request->get('channel') != null ? $request->get('channel') : 'Plaid';
 
         $investmentData = [
             'investment_num' => time(),
@@ -112,11 +112,12 @@ class InvestmentService extends BaseService
             'address' => $address,
             'invested_amount' => $investment_amount,
             'user_id' => $user->id,
-            'investment_status' => 0//UserInvestment::ORDER_STATUS_INDEX['Pending']
+            'investment_status' => 0,//UserInvestment::ORDER_STATUS_INDEX['Pending']
+            'channel' => $channel
         ];
 
         $investment = UserInvestment::create($investmentData);
-
+        
         if (isset($solution_ids)) {
             foreach ($solution_ids as $id) {
                 $investmentSolutions[] = array('investment_id' => $investment->id, 'solution_id' => $id, 'user_id' => $user->id);

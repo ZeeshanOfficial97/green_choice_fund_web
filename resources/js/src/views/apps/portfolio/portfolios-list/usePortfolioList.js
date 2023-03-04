@@ -49,7 +49,10 @@ export default function usePortfolioList() {
   })
 
   const fetchPortfolios = (ctx, callback) => {
-
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-portfolio/fetchPortfolios', {
         q: searchQuery.value,
@@ -66,6 +69,10 @@ export default function usePortfolioList() {
         const total = response.data.data?.pagination?.total || 0;
         callback(portfolios)
         totalPortfolios.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((err,) => {
         toast({
@@ -76,6 +83,10 @@ export default function usePortfolioList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

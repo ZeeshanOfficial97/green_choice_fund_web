@@ -1,46 +1,27 @@
 <template>
   <div class="auth-wrapper auth-v2">
     <b-row class="auth-inner m-0">
-
       <!-- Brand logo-->
       <b-link class="brand-logo">
         <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">
-          Green Choice Fund
-        </h2>
+        <h2 class="brand-text text-primary ml-1">Green Choice Fund</h2>
       </b-link>
       <!-- /Brand logo-->
 
       <!-- Left Text-->
-      <b-col
-        lg="8"
-        class="d-none d-lg-flex align-items-center p-5"
-      >
-        <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-          <b-img
-            fluid
-            :src="imgUrl"
-            alt="Login V2"
-          />
+      <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
+        <div
+          class="w-100 d-lg-flex align-items-center justify-content-center px-5"
+        >
+          <b-img fluid :src="imgUrl" alt="Login V2" />
         </div>
       </b-col>
       <!-- /Left Text-->
 
       <!-- Login-->
-      <b-col
-        lg="4"
-        class="d-flex align-items-center auth-bg px-2 p-lg-5"
-      >
-        <b-col
-          sm="8"
-          md="6"
-          lg="12"
-          class="px-xl-2 mx-auto"
-        >
-          <b-card-title
-            class="mb-1 font-weight-bold"
-            title-tag="h2"
-          >
+      <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
+        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
+          <b-card-title class="mb-1 font-weight-bold" title-tag="h2">
             Welcome to <span class="text-primary">Green Choice Fund</span> 👋
           </b-card-title>
           <b-card-text class="mb-2">
@@ -48,19 +29,10 @@
           </b-card-text>
 
           <!-- form -->
-          <validation-observer
-            ref="loginForm"
-            #default="{ invalid }"
-          >
-            <b-form
-              class="auth-login-form mt-2"
-              @submit.prevent="login"
-            >
+          <validation-observer ref="loginForm" #default="{ invalid }">
+            <b-form class="auth-login-form mt-2" @submit.prevent="login">
               <!-- email -->
-              <b-form-group
-                label="Email"
-                label-for="login-email"
-              >
+              <b-form-group label="Email" label-for="login-email">
                 <validation-provider
                   #default="{ errors }"
                   name="Email"
@@ -119,6 +91,7 @@
 
               <!-- submit buttons -->
               <b-button
+                v-if="showLoaderBtn == false"
                 type="submit"
                 variant="primary"
                 block
@@ -126,9 +99,22 @@
               >
                 Sign in
               </b-button>
+              <b-button
+                v-if="showLoaderBtn == true"
+                variant="primary"
+                class="mr-2 text-center"
+                type="button"
+                block
+              >
+                <b-spinner
+                  variant="light"
+                  key="light"
+                  label="Loading..."
+                  small
+                ></b-spinner>
+              </b-button>
             </b-form>
           </validation-observer>
-
         </b-col>
       </b-col>
       <!-- /Login-->
@@ -138,8 +124,8 @@
 
 <script>
 /* eslint-disable global-require */
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+import VuexyLogo from "@core/layouts/components/Logo.vue";
 import {
   BRow,
   BCol,
@@ -154,18 +140,19 @@ import {
   BForm,
   BButton,
   VBTooltip,
-} from 'bootstrap-vue'
-import useJwt from '@/auth/jwt/useJwt'
-import { required, email } from '@validations'
-import { togglePasswordVisibility } from '@core/mixins/ui/forms'
-import store from '@/store/index'
-import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+  BSpinner,
+} from "bootstrap-vue";
+import useJwt from "@/auth/jwt/useJwt";
+import { required, email } from "@validations";
+import { togglePasswordVisibility } from "@core/mixins/ui/forms";
+import store from "@/store/index";
+import { getHomeRouteForLoggedInUser } from "@/auth/utils";
 
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
   directives: {
-    'b-tooltip': VBTooltip,
+    "b-tooltip": VBTooltip,
   },
   components: {
     BRow,
@@ -183,83 +170,112 @@ export default {
     VuexyLogo,
     ValidationProvider,
     ValidationObserver,
+    BSpinner,
   },
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      userEmail: '',
-      password: '',
-      sideImg: require('@/assets/images/pages/login-v2.svg'),
-
+      userEmail: "",
+      password: "",
+      sideImg: require("@/assets/images/pages/login-v2.svg"),
+      showLoaderBtn: false,
       // validation rules
       required,
       email,
-    }
+    };
   },
   computed: {
     passwordToggleIcon() {
-      return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
     },
     imgUrl() {
-      if (store.state.appConfig.layout.skin === 'dark') {
+      if (store.state.appConfig.layout.skin === "dark") {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.sideImg = require('@/assets/images/pages/login-v2-dark.svg')
-        return this.sideImg
+        this.sideImg = require("@/assets/images/pages/login-v2-dark.svg");
+        return this.sideImg;
       }
-      return this.sideImg
+      return this.sideImg;
     },
   },
   methods: {
     login() {
-      this.$refs.loginForm.validate().then(success => {
+      this.$refs.loginForm.validate().then((success) => {
         if (success) {
+          this.showLoaderBtn = true;
           useJwt
             .login({
               email: this.userEmail,
               password: this.password,
             })
-            .then(response => {
-
-              const { user } = response.data.data
-              user.role = user?.roles[0]?.slug || ''
+            .then((response) => {
+              if (response.data.code == 610) {
+                this.showLoaderBtn = false;
+                this.$toast({
+                  component: ToastificationContent,
+                  props: {
+                    title: response.data?.message,
+                    icon: "AlertTriangleIcon",
+                    variant: "danger",
+                  },
+                });
+                return;
+              }
+              const { user } = response.data.data;
+              user.role = user?.roles[0]?.slug || "";
               user.ability = [
                 {
-                  action: 'manage',
-                  subject: 'all',
-                }]
-              useJwt.setToken(response.data.data.accessToken)
-              useJwt.setRefreshToken(response.data.data.accessToken)
-              localStorage.setItem('userData', JSON.stringify(user))
-              this.$ability.update(user.ability)
-
+                  action: "manage",
+                  subject: "all",
+                },
+              ];
+              useJwt.setToken(response.data.data.accessToken);
+              useJwt.setRefreshToken(response.data.data.accessToken);
+              localStorage.setItem("userData", JSON.stringify(user));
+              this.$ability.update(user.ability);
+              this.showLoaderBtn = false;
               // ? This is just for demo purpose as well.
               // ? Because we are showing eCommerce app's cart items count in navbar
               //   this.$store.commit('app-ecommerce/UPDATE_CART_ITEMS_COUNT', userData.extras.eCommerceCartItemsCount)
 
               // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
-              this.$router.replace(getHomeRouteForLoggedInUser(user?.roles[0]?.name || '')).then(() => {
-                this.$toast({
-                  component: ToastificationContent,
-                  position: 'bottom-right',
-                  props: {
-                    title: `Welcome ${user.name || user.email}`,
-                    icon: 'CoffeeIcon',
-                    variant: 'success',
-                    text: `You have successfully logged in as ${user.role}. Now you can start to explore!`,
-                  },
-                })
-              })
+              this.$router
+                .replace(
+                  getHomeRouteForLoggedInUser(user?.roles[0]?.name || "")
+                )
+                .then(() => {
+                  this.$toast({
+                    component: ToastificationContent,
+                    position: "bottom-right",
+                    props: {
+                      title: `Welcome ${user.name || user.email}`,
+                      icon: "CoffeeIcon",
+                      variant: "success",
+                      text: `You have successfully logged in as ${user.role}. Now you can start to explore!`,
+                    },
+                  });
+                });
             })
-            .catch(error => {
-              this.$refs.loginForm.setErrors(error.response.data.error)
-            })
+            .catch((error) => {
+              this.$refs.loginForm.setErrors(error.response.data.error);
+              this.showLoaderBtn = false;
+              this.$toast({
+                component: ToastificationContent,
+                props: {
+                  title: error?.message
+                    ? error.message
+                    : error?.response?.data?.message,
+                  icon: "AlertTriangleIcon",
+                  variant: "danger",
+                },
+              });
+            });
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
-@import '~@resources/scss/vue/pages/page-auth.scss';
+@import "~@resources/scss/vue/pages/page-auth.scss";
 </style>

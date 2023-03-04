@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\InfoUrl;
 use App\Models\InstitutionInquiry;
 use App\Models\Lookup;
+use App\Services\Api\V1\GeneralService as V1GeneralService;
 use App\Services\Web\GeneralService;
 
 class GeneralController extends ApiController
@@ -24,29 +25,13 @@ class GeneralController extends ApiController
     /**
      * @param GeneralService $generalService
      */
-    public function __construct(GeneralService $generalService)
+    public function __construct(V1GeneralService $generalService)
     {
         $this->generalService = $generalService;
     }
 
-    public function getSplashMetadata(Request $request)
-    {
-        $userType = $this->generalService->getUserTypes();
-        $contactUsReason = $this->generalService->getContactUsReasons();
-        $infoUrl = $this->generalService->getInfoUrls();
-        $infographic = $this->generalService->getFirstInfographic();
-        $eula = $this->generalService->getFirstEULA();
-
-        $data = [
-            'userType' => $userType,
-            'contactUsReason' => $contactUsReason,
-            'infoUrl' => $infoUrl,
-            'infographic' => asset('storage/' . $infographic->file_url),
-            'eula' => asset('storage/' . $eula->file_url),
-            'stripe_payment_url' => config('app_green_choice_fund.stripe_payment_url')
-        ];
-
-        return $this->successResponse("Splash Metadata", $data);
+    public function donate_paypal() {
+        return view('paypal.donate_paypal');
     }
 
     public function getEULA(Request $request)

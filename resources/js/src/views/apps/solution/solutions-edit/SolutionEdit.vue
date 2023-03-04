@@ -95,7 +95,9 @@
                         rules=""
                       >
                         <b-form-group label-for="solution-media">
-                          <template v-slot:label> File </template>
+                          <template v-slot:label>
+                            Media (Maximum selected files are 5)
+                          </template>
                           <b-form-file
                             id="solution-media"
                             accept="image/jpeg, image/jpg, image/png"
@@ -172,7 +174,7 @@
                         <b-form-group label="" label-for="status">
                           <label></label>
                           <b-form-checkbox v-model="solutionData.status">
-                            Status
+                            Active
                           </b-form-checkbox>
 
                           <b-form-invalid-feedback>
@@ -232,7 +234,7 @@
 
                 <b-card-body>
                   <b-row>
-                    <div class="d-flex">
+                    <div class="d-flex" style="flex-wrap:wrap">
                       <!-- Solution # -->
                       <b-col
                         v-for="(item, index) in solutionData.solution_media"
@@ -243,19 +245,21 @@
                         class="mb-2 text-center"
                       >
                         <div class="position-relative">
-                          <img
-                            :src="item.image"
-                            :alt="item.image"
-                            class="img-responsive img-fluid w-75"
-                            style="border-radius: 4px"
-                          />
+                          <a style="text-decoration: none; cursor: pointer;" target="_blank" :href=item.image>
+                            <img 
+                              :src="item.image"
+                              :alt="item.image"
+                              class="img-responsive img-fluid w-75"
+                              style="border-radius: 4px;cursor: pointer;"
+                            />
+                          </a>
                           <div class="img-remove">
-                            <span
-                              @click.self="deleteImage(index)"
-                              class="img-icon text-danger"
-                              >X</span
-                            >
-                          </div>
+                              <span style="cursor: pointer;"
+                                @click.self="deleteImage(index)"
+                                class="img-icon text-danger cursor-pointer"
+                                >X</span
+                              >
+                            </div>
                         </div>
                       </b-col>
                     </div>
@@ -364,6 +368,10 @@ export default {
         categoryOptions.value = [];
       });
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "none";
+    }
     store
       .dispatch("app-solution/fetchSolution", {
         id: router.currentRoute.params.id,
@@ -391,13 +399,20 @@ export default {
         solutionData.value.published =
           solutionData.value.published == 1 ? true : false;
         solutionData.value["media"] = [];
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         solutionData.value = undefined;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       });
 
     const onSubmit = () => {
-
       showLoaderBtn.value = true;
       let formData = new FormData();
       formData.append("id", solutionData.value.id);
@@ -406,7 +421,7 @@ export default {
       formData.append("description", solutionData.value.description);
       formData.append("published", solutionData.value.published);
       formData.append("status", solutionData.value.status);
-
+      debugger;
       (solutionData.value.media || []).forEach((image) => {
         formData.append("media[]", image);
       });

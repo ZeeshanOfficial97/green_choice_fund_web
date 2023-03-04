@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-3">
     <div><h2 class="brand-text">Green Choice Funds</h2></div>
     <div v-if="options" class="pl-3 pr-3">
       <!-- collapse -->
@@ -39,6 +39,10 @@ export default {
   //   },
   // },
   setup() {
+    const appLoading = document.getElementById("loading-bg");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     const FAQ_APP_STORE_MODULE_NAME = "app-faq";
 
     // Register module
@@ -56,8 +60,11 @@ export default {
     store
       .dispatch("app-faq/fetchFaqsUser")
       .then((response) => {
-        debugger;
         options.value = response.data.data || [];
+        const appLoading = document.getElementById("loading-bg");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         options.value = [];

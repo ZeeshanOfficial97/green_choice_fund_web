@@ -146,7 +146,6 @@
               </b-card>
             </b-col>
           </b-row>
-
         </b-form>
       </validation-observer>
     </template>
@@ -234,6 +233,10 @@ export default {
         store.unregisterModule(FAQ_APP_STORE_MODULE_NAME);
     });
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch("app-faq/fetchFaq", {
         id: router.currentRoute.params.id,
@@ -252,9 +255,17 @@ export default {
         if (response.data.data) {
           faqData.value.status = response.data.data.status == "active";
         }
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         faqData.value = undefined;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       });
 
     const onSubmit = () => {
@@ -300,8 +311,6 @@ export default {
           });
         });
     };
-
-    
 
     return {
       showLoaderBtn,

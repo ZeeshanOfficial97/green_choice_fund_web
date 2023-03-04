@@ -231,18 +231,28 @@ export default {
         store.unregisterModule(INQUIRY_APP_STORE_MODULE_NAME);
     });
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch("app-user-inquiry/fetchInquiry", {
         id: router.currentRoute.params.id,
       })
       .then((response) => {
-        
         inquiryData.value = response.data.data;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
-        
         if (error.response.status === 404) {
           inquiryData.value = undefined;
+        }
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
         }
       });
 

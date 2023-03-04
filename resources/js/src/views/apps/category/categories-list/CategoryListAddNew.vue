@@ -74,7 +74,7 @@
           >
             <b-form-group label-for="category-media">
               <template v-slot:label>
-                File <span class="text-danger">*</span>
+                Media <span class="text-danger">*</span>
               </template>
 
               <b-form-file
@@ -117,7 +117,7 @@
           >
             <b-form-group label="" label-for="">
               <b-form-checkbox v-model="categoryData.status">
-                Status
+                Active
               </b-form-checkbox>
 
               <b-form-invalid-feedback>

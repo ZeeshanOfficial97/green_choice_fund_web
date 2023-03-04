@@ -197,6 +197,30 @@
                         </b-form-group>
                       </validation-provider>
                     </b-col>
+                    <!-- DOB -->
+                    <b-col cols="12" md="4" class="mb-md-0 mb-2">
+                      <validation-provider
+                        #default="validationContext"
+                        name="channel"
+                        rules=""
+                      >
+                        <b-form-group label-for="date-of-birth">
+                          <template v-slot:label> Channel </template>
+                          <b-form-input
+                            id="channel"
+                            v-model="investmentData.channel"
+                            :state="getValidationState(validationContext)"
+                            trim
+                            placeholder="Channel"
+                            readonly
+                          />
+
+                          <b-form-invalid-feedback>
+                            {{ validationContext.errors[0] }}
+                          </b-form-invalid-feedback>
+                        </b-form-group>
+                      </validation-provider>
+                    </b-col>
 
                     <!-- Address -->
                     <b-col cols="12" md="12" class="mb-md-0 mb-2">
@@ -257,7 +281,7 @@
                       <validation-provider
                         #default="validationContext"
                         name="stripe charge id"
-                        rules="required"
+                        rules=""
                       >
                         <b-form-group label-for="stripe-charge-id">
                           <template v-slot:label> Stripe Charge Id </template>
@@ -295,7 +319,7 @@
                             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                             :options="statusOptions"
                             label="label"
-                            :reduce="(val) => (val.value || '').toString()"
+                            :reduce="(val) => val.value"
                             v-model="investmentData.investment_status"
                           />
 
@@ -466,11 +490,12 @@
                     :key="index"
                   >
                     <b-row>
-
                       <!-- Solution # -->
                       <b-col cols="12" md="12" class="mb-md-0 mb-2">
                         <b-form-group :label-for="`solution-id-${index}`">
-                          <h5 :id="`solution-id-${index}`">Solution # {{(index + 1)}}</h5>
+                          <h5 :id="`solution-id-${index}`">
+                            Solution # {{ index + 1 }}
+                          </h5>
                         </b-form-group>
                       </b-col>
 
@@ -594,7 +619,7 @@ export default {
     const { refFormObserver, getValidationState, resetForm } =
       formValidation(resetinvestmentData);
     const resetinvestmentData = () => {
-      investmentData.value = JSON.parse(JSON.stringify(blankinvestmentData));
+      investmentData.value = JSON.parse(JSON.stringify({}));
     };
 
     // Register module
@@ -611,29 +636,51 @@ export default {
     });
 
     const statusOptions = [
-      { label: "Pending", value: "0" },
-      { label: "Verified", value: "1" },
-      { label: "In Process", value: "2" },
-      { label: "Process", value: "3" },
-      { label: "Cancelled", value: "4" },
+      { label: "Pending", value: 1 },
+      { label: "Verified", value: 2 },
+      { label: "In Process", value: 3 },
+      { label: "Process", value: 4 },
+      { label: "Cancelled", value: 5 },
     ];
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch("app-user-investment/fetchInvestment", {
         id: router.currentRoute.params.id,
       })
       .then((response) => {
+        debugger;
+        if(response.data.data) {
+          if(response.data.data.investment_status || response.data.data.investment_status == 0) {
+            response.data.data.investment_status = response.data.data.investment_status + 1;
+          }
+        }
         investmentData.value = response.data.data || undefined;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         investmentData.value = undefined;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       });
 
     const onSubmit = () => {
-
+      debugger;
       showLoaderBtn.value = true;
+      investmentData.value.investment_status= investmentData.value.investment_status - 1;
       store
-        .dispatch("app-user-investment/updateInvestmentStatus", investmentData.value)
+        .dispatch(
+          "app-user-investment/updateInvestmentStatus",
+          investmentData.value
+        )
         .then((response) => {
           showLoaderBtn.value = false;
 

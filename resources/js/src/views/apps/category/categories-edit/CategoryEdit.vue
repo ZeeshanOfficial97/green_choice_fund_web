@@ -66,7 +66,7 @@
                         name="media"
                         rules=""
                       >
-                        <b-form-group label="File" label-for="category-media">
+                        <b-form-group label="Media" label-for="category-media">
                           <b-form-file
                             id="category-media"
                             accept=".mp4, .jpg, .png, .gif"
@@ -111,7 +111,7 @@
                       >
                         <b-form-group label="" label-for="">
                           <b-form-checkbox v-model="categoryData.status">
-                            Status
+                            Active
                           </b-form-checkbox>
 
                           <b-form-invalid-feedback>
@@ -153,6 +153,61 @@
                         </b-button>
                       </div>
                     </b-col>
+                  </b-row>
+                </b-card-body>
+              </b-card>
+            </b-col>
+          </b-row>
+
+          <!-- Category details-->
+          <b-row>
+            <b-col cols="12" lg="12" class="p-0">
+              <b-card no-body>
+                <b-card-header class="pb-25">
+                  <h3>Category Media</h3>
+                </b-card-header>
+                <!-- Spacer -->
+                <hr class="demo-inline-spacing" />
+
+                <b-card-body>
+                  <b-row>
+                    <div class="d-flex">
+                      <!-- Solution # -->
+                      <b-col
+                        v-for="(item, index) in categoryData.category_media"
+                        :id="`item-${index}`"
+                        :key="index"
+                        cols="3"
+                        md="3"
+                        class="mb-2 text-center"
+                      >
+                        <div class="position-relative">
+                          <a
+                            v-if="item.type == 'image'"
+                            style="text-decoration: none; cursor: pointer"
+                            target="_blank"
+                            :href="item.image"
+                          >
+                            <img
+                              :src="item.image"
+                              :alt="item.image"
+                              class="img-responsive img-fluid w-75"
+                              style="border-radius: 4px; cursor: pointer"
+                            />
+                          </a>
+                          <a
+                            v-if="item.type == 'video'"
+                            style="text-decoration: none; cursor: pointer"
+                            target="_blank"
+                            :href="item.image"
+                          >
+                            <video width="320" height="240" controls>
+                              <source :src="item.image" />
+                            </video>
+                          </a>
+                        </div>
+                      </b-col>
+                    </div>
                   </b-row>
                 </b-card-body>
               </b-card>
@@ -245,6 +300,10 @@ export default {
         store.unregisterModule(CATEGORY_APP_STORE_MODULE_NAME);
     });
 
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "none";
+    }
     store
       .dispatch("app-category/fetchCategory", {
         id: router.currentRoute.params.id,
@@ -262,9 +321,17 @@ export default {
         categoryData.value.published =
           categoryData.value.published == 1 ? true : false;
         categoryData.value["media"] = [];
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((error) => {
         categoryData.value = undefined;
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       });
 
     const onSubmit = () => {
@@ -284,7 +351,6 @@ export default {
       store
         .dispatch("app-category/updateCategory", formData)
         .then((response) => {
-          
           showLoaderBtn.value = false;
 
           toast({
@@ -306,7 +372,6 @@ export default {
           }
         })
         .catch((err) => {
-          
           toast({
             component: ToastificationContent,
             props: {

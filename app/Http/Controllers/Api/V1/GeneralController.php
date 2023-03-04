@@ -43,7 +43,10 @@ class GeneralController extends ApiController
             'infoUrl' => $infoUrl,
             'infographic' => asset('storage/' . $infographic->file_url),
             'eula' => asset('storage/' . $eula->file_url),
-            'stripe_payment_url' => config('app_green_choice_fund.stripe_payment_url')
+            'stripe_payment_url' => config('app_green_choice_fund.stripe_payment_url'),
+            'paypal_payment_url' => config('app_green_choice_fund.paypal_payment_url'),
+            'donate_paypal_payment_url' => url('general/donate-paypal'),
+            'zelle_payment_url' => asset('storage/' . 'zelle/zelle.pdf')
         ];
 
         return $this->successResponse("Splash Metadata", $data);
@@ -124,5 +127,8 @@ class GeneralController extends ApiController
         //     \getenv("PLAID_ENVIRONMENT")
         // );
         // dd($plaid);
+    }
+    public function donate_paypal() {
+        return view('paypal.donate_paypal');
     }
 }

@@ -15,7 +15,7 @@ export default function useFaqList() {
   // Table Handlers
   const tableColumns = [
     { key: 'question', sortable: false },
-    { key: 'answer', sortable: false},
+    { key: 'answer', sortable: false },
     { key: 'status', sortable: false },
     { key: 'actions' },
   ]
@@ -47,6 +47,10 @@ export default function useFaqList() {
   })
 
   const fetchFaqs = (ctx, callback) => {
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-faq/fetchFaqs', {
         q: searchQuery.value,
@@ -61,6 +65,10 @@ export default function useFaqList() {
         const total = response.data.data?.pagination?.total || 0;
         callback(faqs)
         totalFaqs.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch(() => {
         toast({
@@ -71,6 +79,10 @@ export default function useFaqList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

@@ -35,7 +35,8 @@ class InvestmentResource extends JsonResource
                 'text_color' => UserInvestment::ORDER_TEXT_CLR[$this->investment_status],
                 'created_at' => $this->created_at,
                 // 'user' => $this->investmentUser,
-                'investment_solutions' => InvestmentSolutionResource::collection($this->userInvestmentSolution)
+                'investment_solutions' => InvestmentSolutionResource::collection($this->userInvestmentSolution),
+                'channel' => $this->channel
             ];
     }
 }

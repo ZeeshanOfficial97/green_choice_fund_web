@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\EulaController;
 use App\Http\Controllers\Web\FaqController;
+use App\Http\Controllers\Web\GeneralController;
 use App\Http\Controllers\Web\InfographicController;
 use App\Http\Controllers\Web\InquiryController;
 use App\Http\Controllers\Web\InvestmentController;
@@ -30,6 +31,10 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::prefix('faqs')->group(function () {
     Route::get('/user', [FaqController::class, 'getFaqsUserList']);
 });
+Route::prefix('general')->group(function () {
+    Route::get('/donate-paypal', [GeneralController::class, 'donate_paypal']);
+});
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::prefix('app-users')->group(function () {
         Route::get('/', [AppUserController::class, 'getAppUsersList']);

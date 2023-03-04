@@ -33,7 +33,8 @@ class InvestmentDetailResource extends JsonResource
                 'contact_no' => $this->contact_no,
                 'address' => $this->address,
                 'dob' => Carbon::parse($this->dob)->format('m-d-Y'),
-                'investment_solutions' => InvestmentSolutionResource::collection($this->userInvestmentSolution)
+                'investment_solutions' => InvestmentSolutionResource::collection($this->userInvestmentSolution),
+                'channel' => $this->channel
             ];
     }
 }

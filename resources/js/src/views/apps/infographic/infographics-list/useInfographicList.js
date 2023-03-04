@@ -46,6 +46,10 @@ export default function useInfographicList() {
   })
 
   const fetchInfographics = (ctx, callback) => {
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-infographic/fetchInfographics', {
         q: searchQuery.value,
@@ -60,6 +64,10 @@ export default function useInfographicList() {
         const total = response.data.data?.pagination?.total || 0;
         callback(inquiries)
         totalInfographics.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch(() => {
         toast({
@@ -70,6 +78,10 @@ export default function useInfographicList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 

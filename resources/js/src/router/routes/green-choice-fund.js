@@ -121,6 +121,8 @@ export default [
     component: () => import('@/views/apps/faq/faqs-list/FaqListView.vue'),
     meta: {
       layout: 'full',
+      resource: 'Auth',
+      action: 'read',
     }
   },
   {

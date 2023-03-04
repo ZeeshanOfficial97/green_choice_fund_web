@@ -55,7 +55,10 @@ export default function useInquiryList() {
   })
 
   const fetchInquiries = (ctx, callback) => {
-    
+    const appLoading = document.getElementById("loading-bg-content");
+    if (appLoading) {
+      appLoading.style.display = "block";
+    }
     store
       .dispatch('app-user-inquiry/fetchInquiries', {
         q: searchQuery.value,
@@ -67,12 +70,14 @@ export default function useInquiryList() {
         status: statusFilter.value,
       })
       .then(response => {
-        
-
         const inquiries = response.data.data.list;
         const total = response.data.data?.pagination?.total || 0;
         callback(inquiries)
         totalInquiries.value = total
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
       .catch((err,) => {
         toast({
@@ -83,13 +88,17 @@ export default function useInquiryList() {
             variant: 'danger',
           },
         })
+        const appLoading = document.getElementById("loading-bg-content");
+        if (appLoading) {
+          appLoading.style.display = "none";
+        }
       })
   }
 
   const fetchInquiryReasons = () => {
     store
       .dispatch('app-user-inquiry/fetchInquiryReasons')
-      .then(response => {response.data.data;})
+      .then(response => { response.data.data; })
       .catch((err) => {
         toast({
           component: ToastificationContent,
