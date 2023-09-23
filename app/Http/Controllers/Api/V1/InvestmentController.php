@@ -132,15 +132,6 @@ class InvestmentController extends ApiController
             return $this->successResponse("Investment funds has been transferred successfully", $result, 'Investment saved');
         } catch (\Throwable $th) {
             DB::rollBack();
-            if (isset($stripeCharge)) {
-                if (($stripeCharge->id != null && $stripeCharge->captured)) {
-                    $stripe = $this->getStripeClient();
-                    $stripeRefund = $stripe->refunds->create([
-                        'charge' => $stripeCharge->id
-                    ]);
-                    $this->investmentService->saveStripeRefund($stripeCharge, $stripeRefund, $user);
-                }
-            }
             return $this->exceptionResponse($th);
         }
     }

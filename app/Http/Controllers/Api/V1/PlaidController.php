@@ -23,11 +23,12 @@ class PlaidController extends ApiController
     public function createLinkToken(Request $request)
     {
         // try {
+        $user = Auth::user();
         $data = $this->getPlaidClient()->tokens->create(
             "Green Choice Fund LLC",
             "en",
             ["US"],
-            new User('user 1234'),
+            new User($user->id),
             ["auth"],
             android_package_name: 'com.greenchoicefund'
         );

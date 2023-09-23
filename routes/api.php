@@ -75,10 +75,3 @@ Route::get('/up', function () {
     Artisan::call('up');
     return 'Application is now live.';
 });
-
-Route::prefix('general')->group(function () {
-    Route::post('/upload-video-second', [GeneralController::class, 'uploadVideoSecond']);
-    Route::post('/upload-video', [GeneralController::class, 'uploadVideo']);
-    Route::get('/serve-video/{filename}', [GeneralController::class, 'serveVideo']);
-    Route::get('/get-video-url/{filename}', [GeneralController::class, 'getVideoUrl']);
-});
